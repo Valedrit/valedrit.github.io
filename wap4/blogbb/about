@@ -1,0 +1,46 @@
+{% macro today() %}
+{% set time="now"|date("H:i","Asia/Ho_Chi_Minh") %}
+{% set gio=time|split(':')[0] %}
+{% if gio in 1..5 %}
+{% set chao='Dậy sớm thế, không ngủ hả!!' %}
+{% elseif gio in 6..9 %}
+{% set chao='Buổi Sáng Tốt Lành. Ngày Mới làm việc, học tập thành công.' %}
+{% elseif gio in 10..12 %}
+{% set chao='Ăn cơm rồi ngủ trưa để chiều còn đi học, đi làm nữa chứ mấy thým' %}
+{% elseif gio in 13..16 %}
+{% set chao='Buổi chiều học tập và làm việc vui vẻ nha!!!' %}
+{% elseif gio in 17..19 %}
+{% set chao='Ăn tối vui vẻ và ngon miệng nha mấy thým' %}
+{% elseif gio in 20..23 or gio=="0" %}
+{% set chao='Học tối, làm việc vui vẻ nhoá.Buổi tối tốt lành' %}
+{% endif %}
+<p>
+{#<i class="fa fa-bell"></i> Giờ là: {{time}}. {{chao}}
+<br/>#}
+{{random(['Chỉ có niềm đau ly biệt mới làm sâu đậm thêm tình yêu đôi lứa.','Hạnh phúc lớn nhất trên đời là niềm tin vững chắc rằng chúng ta được yêu - được yêu vì chính bản thân hay đúng hơn được yêu bất chấp bản thân tha.','Tình yêu giống như một chiếc cốc, thà để nó vỡ còn hơn làm bạn đau vì cố gắng ghép những mảnh vỡ lại với nhau.','Từ bỏ không có nghĩa là yếu đuối, đôi khi nó có nghĩa là bạn đủ mạnh mẽ để buông tay.','Đôi lúc, sự mất đi của một người khiến thế giới dường như trống vắng hơn.','Người ta nói thời gian là liều thuốc hữu hiệu nhất để quên một người. Nhưng đối với em, để quên anh, thời gian cũng trở nên vô dụng.','Một người bạn thực sự là người bỏ qua hàng rào hỏng và trân trọng những bông hoa xinh đẹp trong khu vườn của bạn.','Một tình bạn đẹp sẽ khiến tâm hồn bạn luôn tươi mới và đầy hi vọng.','Hãy nỗ lực để trở thành cầu vồng trên đám mây của bạn bè.','Kim cương không phải người bạn tốt nhất mà người bạn tốt nhất mới chính là kim cương.','Trong chiếc bánh cuộc đời, bạn tốt chính là mảnh sô cô la ngọt ngào.','Nhiều người đến rồi đi trong cuộc đời bạn, nhưng chỉ có người bạn thực sự mới để lại dấu vết trong tim bạn.','Bạn tốt giống như vì sao, bạn không phải lúc nào cũng nhìn thấy họ nhưng bạn biết họ luôn ở đó.','Cuộc sống ý nghĩa là một hành trình khám phá những điều tuyệt vời và có những người bạn tốt đồng hành.','Người bạn tốt giống như cỏ bốn lá, gặp được là may mắn nhưng không thể cưỡng cầu.','Mọi thứ đều sẽ bị hao mòn theo thời gian, chỉ có người bạn thực sự sẽ không bao giờ bị phủ bụi.','Người bạn thực sự luôn có sự đồng điệu trong tâm hồn.','Tình bạn thực sự là khi dù cả hai người có im lặng, bạn vẫn thấy thảnh thơi.','Điều quan trọng trong cuộc sống không phải chúng ta có gì, mà chúng ta có ai.','Tình bạn chân chính sẽ không bao giờ xa cách, có thể xa về địa lý nhưng sẽ không xa ở trong tim.','Hãy đối xử với người bạn tốt nhất như đối xử với chính mình.','Hãy kết bạn với người khiến bạn trở nên tốt hơn, sống ý nghĩa hơn.','Muốn có một người bạn tốt, hãy biến mình thành người bạn tốt trước đã.','Một trong những điều tuyệt vời nhất của tình bạn là thấu hiểu và được thấu hiểu.','Bạn bè là người cho bạn tự do được là chính mình.','Bạn tốt thể hiện tình cảm trong lúc khó khăn, chứ không phải khi hạnh phúc.','Tình yêu là thứ duy nhất có thể biến thù thành bạn.','Tình yêu chân chính đã khó tìm, tình bạn chân chính còn khó tìm hơn.'])}}
+</p>
+{% endmacro %}
+{% macro ads() %}
+<h2 id="ads">ADS - Liên Kết</h2>
+<p>
+<div>
+<i class="fa fa-eercast"></i> <a href="http://jekyll.viwap.com">JekyllRB.GQ - Diễn đàn Jekyll</a>
+</div>
+<div>
+<i class="fa fa-eercast"></i> <a href="http://wapit.gq">WapIT.GQ - Blog chia sẻ code wap/web miễn phí</a>
+</div>
+</p>
+{% endmacro %}
+{% use '_includes' %}
+{% import 'about' as me %}
+{% set title = 'Thông Tin Về BlogBB' %}
+{{block('head')}}
+<article id="page"> 
+<h2 id="about">Giới Thiệu</h2> 
+<center style="color:gray">{{me.today}}</center>
+<p>
+BlogBB.GQ là một trang blog viết, sưu tầm, chia sẻ... những dòng tâm trạng hay, những mẩu truyện... hứa hẹn mang đến những thông điệp ý nghĩa, chứa nhiều cảm xúc cho độc giả...
+</p>
+{{me.ads}}
+</article>
+{{block('end')}}

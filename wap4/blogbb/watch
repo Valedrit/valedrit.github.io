@@ -1,0 +1,53 @@
+{% use '_includes' %}
+{% set url = get_uri_segments() %}
+{% import '_functions' as func %}
+{% set title = 'Watching TV' %}
+{% set watch = get_data('watch')[0].data|json_decode %}
+{% set list_ch = watch.ch|trim|split(' @ ') %}
+{% set id_ch = url[1]|split('.')[1]|trim %}
+{{block('head')}}
+<article id="watch">
+<h2 id="tv"><i class="fa fa-television"></i> Watching TV</h2>
+{% if url[1]!='' and id_ch in list_ch %}
+<div class="list-group">
+<div class="list-group-item list-group-item-warning">
+CH{{id_ch}}{% if id_ch < 10 %} - VTV{{id_ch}}{% elseif id_ch == 10 %} - HBO{% elseif id_ch == 11 %} - HTV7{% elseif id_ch == 12 %} - HTV9{% endif %}
+</div>
+<p class="video-responsive">
+<video src="{{watch['ch'~id_ch]}}" autoplay="autoplay" controls="controls">Trình duyệt của bạn không hỗ trợ xem video.</video>
+</p>
+</div>
+{% endif %}
+{% if 'Mobile' in user_agent() %}
+<div class="list-group">
+<div class="list-group-item list-group-item-danger">
+Danh sách kênh
+</div>
+<div class="alert alert-info max-width">
+{% else %}
+<h2 id="CH">
+Danh sách kênh
+</h2>
+<p>
+{% endif %}
+{% set total = watch.total|trim %}
+{% for i in 1..total %}
+{% set i = i|trim %}
+{% if 'Mobile' in user_agent() %}
+<li>
+{% else %}
+<div>
+{% endif %}
+<i class="fa fa-video-camera"></i> <a href="/watch/ch.{{i}}">CH{{i}}{% if i < 10 %} - VTV{{i}}{% elseif i == 10 %} - HBO{% elseif i == 11 %} - HTV7{% elseif i == 12 %} - HTV9{% endif %}</a>
+{% if 'Mobile' in user_agent() %}
+</li>
+{% else %}
+</div>
+{% endif %}
+{% endfor %}
+{% if 'Mobile' in user_agent() %}
+</div>
+{% endif %}
+</div>
+</article>
+{{block('end')}}

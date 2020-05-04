@@ -1,0 +1,47 @@
+{% use '_includes_forum' %}
+{% import '_functions' as func %}
+{% set title = 'Thông báo của tôi' %}
+{% if func.signin|trim %}
+{% set signin = func.signin|trim %}
+{{block('head')}}
+{% set data= func.get('notification_'~signin)|trim|split('@') %}
+{% set total=data|length-1 %} 
+ {% set page_max=total//10 %}
+{% if total//10 != total/10 %}
+{% set page_max=total//10+1 %}
+{% endif %}
+ {% set url=get_uri_segments() %}
+{% set p=get_get('p')|default(1) %} 
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*10-10 %}
+{% set notifi %}
+{% for k in func.get('notification_'~signin)|trim|split('@') %}
+{% set k = k|trim %}
+{% set u = get_data('notification_'~signin~'_'~k|trim)[0].data|json_decode %}
+{% if u['view']=='no' %}
+{{k}}.
+{% endif %}
+{% endfor %}
+{% endset %}
+<div class="phdr"><b>Thông báo của tôi</b> {% if (notifi|split('.')|length-1)|trim >= 1 %}<font color="red">(mới: {{(notifi|split('.')|length-1)|trim}}){% endif %}</font></div>
+<div class="menuItem">
+{% if total == 0 %}
+<div class="rmenu">Chưa có thông báo nào!</div>
+{% endif %}
+{% for id in data|slice(0,total)|slice(st,10) %}
+{% set entry = get_data('notification_'~signin~'_'~id|trim)[0].data|json_decode %}
+ <div class="{% if entry['view']=='no' %}rmenu{% else %}list1{% endif %}">{{func.bbcode(entry['comment']|raw)}} <font color="gray" style="font-size:small">({{func.ago(entry['time'])}})</font>
+</div>
+{% if entry['view']=='no' %}{{func.add('notification_'~signin~'_'~id|trim,'view','yes')}}{% endif %}
+{% endfor %}
+</div>
+{{func.paging(url|join('/')~'?p',p,page_max)}}
+{{block('end')}}
+{% else %}
+{% include '_404' %}
+{% endif %}

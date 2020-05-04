@@ -1,0 +1,73 @@
+{% use '_includes' %}
+{% import '_functions' as func %}
+{% set url = get_uri_segments() %}
+{% set id = url[1]|split('.')[1]|trim %}
+{% set valeric = get_data('blog')[0].data|json_decode %}
+{% set file = get_data('file_'~id)[0].data|json_decode %}
+{% set view = file.view|trim %}
+{% set title = file.name %}
+{% set desc = file.doc|replace({'[b]':'','[/b]':'','[i]':'','[/i]':'','[s]':'','[/s]':'','[u]':'','[/u]':'','[center]':'','[/center]':'','@':'','\r\n':' '})|slice(0,160) %}
+{% set signin = func.signin()|trim %}
+{% set share = 'http://'~valeric.domain~'/'~get_uri_segments()|join('/') %}
+{% set go = func.add_db('file_'~id,{"view":(view+1)}) %}
+{% set thumb = file.doc|split('[img]')[1]|split('[/img]')[0]|default('http://valeric.viwap.com/images/blog.jpeg') %}
+{{block('head')}}
+{% if file.name and file.doc and url[1]==func.rwurl(file.name)~'.'~id~'.html' %}
+<article id="post-page">
+ <h2>{{file.name|raw}}</h2>	 
+ <time datetime="{{file.time|date('Y',"Asia/Ho_Chi_Minh")}}-{{file.time|date('m',"Asia/Ho_Chi_Minh")}}-{{file.time|date('d',"Asia/Ho_Chi_Minh")}}T00:00:00+00:00" class="by-line">
+<i class="fa fa-{#eye#}clock-o"></i> {#{{view|default(1)}},  #}{{file.time|date('d',"Asia/Ho_Chi_Minh")}} {{file.time|date('M',"Asia/Ho_Chi_Minh")}} {{file.time|date('Y',"Asia/Ho_Chi_Minh")}} {% if signin and signin in ['admin','valerat02','brook','dai'] %} | <a href="/apanel/{{url[1]}}">Chỉnh sửa</a> | <a href="?act=delete">Xóa bỏ</a>{% endif %}
+</time> 
+<div class="content">
+{% if get_get('act')=='delete' and signin and signin in ['admin','valerat02','brook','dai'] %}
+{% set delete=get_post('delete') %}
+{% if request_method()|lower == "post" %}
+{% if delete %}
+
+<script language="javascript" type="text/javascript"> 
+window.location.href="/apanel"; 
+</script> 
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/apanel">
+{% endif %}
+{% else %}
+<div class="alert alert-info max-width"><div class="form-group">
+<p id="title-del-post">
+<center>
+<font color="red">Bạn có thực sự muốn xóa bỏ bài viết này?</font>
+</center>
+</p>
+<form method="post" action="">
+<p id="del-post">
+<center>
+<input class="btn btn-primary" type="submit" name="delete" value="Đồng ý"/>
+</center>
+</p>
+</form>
+</div>
+</div>
+{% endif %}
+{% else %}
+<p id="text-post">
+{{func.bbcode(file.doc)}}
+</p>
+<p id="share-post">
+<center>
+<span class="social-inp"><a class="share share-inp"><font color="white"><i class="fa fa-share-alt"></i> Share </font></a> <a class="share fb" href="https://www.facebook.com/sharer/sharer.php?u={{share}}" rel="nofollow" target="_blank" title="Chia sẻ lên FaceBook"><font color="white"><i class="fa fa-facebook"></i> FaceBook</font></a><a class="share tw" href="https://twitter.com/home?status={{share}}" rel="nofollow" target="_blank" title="Chia sẻ lên Twitter"><font color="white"><i class="fa fa-twitter"></i> Twitter</font></a></span>
+</center>
+</p>
+{% endif %}
+</div>
+</article>
+{% elseif url[1]=='' %}
+
+{% else %}
+<article id="post-page"> <h2>Lỗi!</h2>	 
+ <time datetime="{{"now"|date('Y')}}-{{"now"|date('m')}}-{{"now"|date('d')}}T00:00:00+00:00" class="by-line"> {{"now"|date('d')}} {{"now"|date('M')}} {{"now"|date('Y')}}</time> 
+<div class="content">
+<p>
+Bài viết này không tồn tại trong thư viện!
+</p>
+</div>
+</article>
+{% endif %}
+{{block('end')}}

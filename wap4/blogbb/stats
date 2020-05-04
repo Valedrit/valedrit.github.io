@@ -1,0 +1,60 @@
+{% import '_functions' as func %}
+{%if not get_data('stats')%}
+{%set x,x=save_data('stats',','),save_data('stats',',')%}
+{%endif%}
+{%set day,time=(now|date('U')+24750)|date('d'),now|date('U')+24750%}
+{%set s=get_data('stats')%}
+{%if 'Googlebot' in user_agent()%}
+{%set g,b=1,'Google'%}
+{%else%}
+{%set u=1%}
+{%endif%}
+{%set ss=s.0.data|split(',')%}
+{%if day!=ss.0%}
+{%set ss=''%}
+{%endif%}
+{%set sr=s.1.data|split(',')%}
+{%if sr.12 and time-sr[sr|length//3]>600%}
+{%set sr=s.1.data|split(sr[sr|length//3]).1|trim(',')%}
+{%elseif sr[sr|length-3] and time-sr[sr|length-3]>600%}
+{%set sr=sr[sr|length-3]~','~sr[sr|length-2]%}
+{%elseif time-sr[sr|length-2]>600%}
+{%set sr=sr[sr|length-2]%}
+{%else%}
+{%set sr=''%}
+{%endif%}
+{%set sd=s.1.data|replace({(','~sr~','):','})|replace({(','~get_cookie('stats')~','):','})%}
+{%if get_cookie('stats') and get_cookie('stats')|date('dmY')!=time|date('dmY')%}
+{%set f=1%}
+{%endif%}
+{%if not get_cookie('stats') or f%}
+{{update_data_by_id('stats',s.0.id,day|escape~','~(ss.1+u)|escape~','~(ss.2+f)|escape~','~(ss.3+g)|escape)}}
+{%endif%}
+{%if time-get_cookie('stats')>300 and time not in s.1.data%}
+{{update_data_by_id('stats',s.1.id,(','~time~b~sd))}}
+{{set_cookie('stats',time)}}
+{%endif%}
+{%set s=get_data('stats')%}
+{%set go,s0=s.1.data|split('Google')|length-1,s.0.data|split(',')%}
+
+{% set count = get_data('count')[0].data|json_decode %}
+{% if get_data_count('count')==0 %}   
+{% set save = save_data('count','{"time":0,"today":1,"total":1}') %}   
+{% else %}   
+{% if count['time']|trim == "now"|date('d','Asia/Ho_Chi_Minh') %}
+{% set gone = func.add_db('count',{"today":(count['today']|trim+1)}) %}  
+{% set gone1 = func.add_db('count',{"total":(count['total']|trim+1)}) %}   
+{% else %} 
+{% set gone = func.add_db('count',{"time":"now"|date("d","Asia/Ho_Chi_Minh")}) %}  
+{% set gone1 = func.add_db('count',{"today":1}) %}  
+{% endif %}   
+{% endif %}   
+{#
+<p>
+ Trực truyến: {{s.1.data|split(',')|length-2-go}} khách ghé thăm{%if go%} và {{go}} bot{%endif%}
+   <br/>
+ Truy cập hôm nay: {{s0.1|number_format(0,'.','.')}} khách ghé thăm{%if s0.2%} ({{s0.2}} Fan){%endif%} và {{s0.3}} bot
+   <br/>
+ Tổng lượt xem: {{count.total|default(0)}} (hôm nay: <b>{{count.today|default(0)}}</b>)
+</p>
+#}

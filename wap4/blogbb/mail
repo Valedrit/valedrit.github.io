@@ -1,0 +1,94 @@
+{% use '_includes_forum' %}
+{% import '_functions' as func %}
+{% import '_avatar' as avatar %}
+{% set url = get_uri_segments() %}
+{% set signin = func.signin()|trim %}
+{% set run = get_data('forum')[0].data|json_decode %}
+{% set title='Tin nhắn' %}
+{{block('head')}}
+{% if signin %}
+{% set you = get_data('user_'~url[1])[0].data|json_decode %}
+{% set me = get_data('user_'~signin)[0].data|json_decode %}
+{% if you['nick']|trim|length > '2' and url[1] != signin %}
+<div class="phdr"><a href="/mail"><i class="fa fa-inbox" aria-hidden="true"></i> Hộp thư</a> / <a href="/user/{{you['nick']}}.html">{{avatar.mau_nick(url[1])}}</a> ({{func.ago(you['on']|trim)}})</div>
+{% include 'mail_send' %}
+{% set per = '10' %}
+{% set data = func.get('mail_'~signin~'_'~url[1])|split('@') %}
+{% set total=data|length-1 %}
+{% set page_max=total//per %}
+{% if total//per != total/per %}
+{% set page_max=total//per+1 %}
+{% endif %}
+{% set p=get_get('p')|default(1) %}
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*per-per %}
+{% if total == '0' %}
+<div class="menuItem" style="background-color:#e9ccd2;"> Hộp thư trống </div>
+{% else %}
+{% for i in data|slice(0,total)|slice(st,per) %}
+{% set mail = get_data('mail_'~i|trim)[0].data|json_decode %}
+{% if mail['name'] != signin and mail['view'] == 'no' %}
+{{func.add('mail_'~i|trim,'view','yes')}}
+{% endif %}
+<div class="postItem"><div class="memInfo"><table id="chat" cellpadding="0" cellspacing="1"><tr><td width="auto"><img class="avt" src="/images/{% if mail['view'] == 'no' %}mail{% else %}view-mail{% endif %}.png" width="40" height="40" /></td><td>{{avatar.sex(mail['name'])}} <a href="/user/{{mail['name']}}.html">
+{% if func.get('user_'~mail['name'],'ban') =='1' %}<s>{{avatar.mau_nick(mail['name'])}}</s>{% else %}{{avatar.mau_nick(mail['name'],func.get('user_'~mail['name'],'right'))}}{% endif %}
+</a> ({{avatar.rights(func.get('user_'~mail['name'],'right'))}})<br/><i class="fa fa-clock-o"></i> {{func.ago(mail['time']|trim)}} </td></tr></table></div> 
+{{func.bbcode(mail['comment'])}} 
+</div>
+{% endfor %}
+{% endif %}
+{{func.paging('mail/'~url[1]~'?p',p,page_max)}}
+{% else %}
+<div class="phdr"><i class="fa fa-pencil" aria-hidden="true"></i> Bạn muốn soạn tin nhắn gửi đến ai ?</div>
+<div class="menuItem">
+<div class="list1">
+<form action="{% if get_data_count('user_'~func.rwurl(get_post('mailto')))=='0' %}../mail{% else %}../mail/{{func.rwurl(get_post('mailto'))}}{% endif %}" method="post"><input type="text" name="mailto"> <input type="submit" value="Tiếp tục"></form></div>
+</div>
+<div class="phdr"><i class="fa fa-inbox" aria-hidden="true"></i> Hộp thư</div>
+{% set per = '10' %}
+{% set data = func.get('list_mail_'~signin)|split('@') %}
+{% set total = data|length-1 %}
+{% set page_max=total//per %}
+{% if total//per != total/per %}
+{% set page_max=total//per+1 %}
+{% endif %}
+{% set p=get_get('p')|default(1) %}
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*per-per %}
+{% if total == '0' %}
+<div class="menuItem" style="background-color:#e9ccd2;">Danh sách trống</div>
+{% else %}
+{% for i in data|slice(0,total)|slice(st,per) %}
+{% set user = get_data('user_'~i|trim)[0].data|json_decode %}
+{% set j = func.get('mail_'~signin~'_'~i|trim)|split('@') %}
+{% set mail = get_data('mail_'~j[0]|trim)[0].data|json_decode %}
+{% set name %}{% endset %}
+{% for k in j %}
+{% set inmail = get_data('mail_'~k|trim)[0].data|json_decode %}
+{% if inmail['name'] != signin and inmail['view'] == 'no' %}
+{% set name=name~'@'~inmail['name'] %}
+{% endif %}
+{% endfor %}
+{% set total = name|split('@')|length-1 %}
+{{func.del('new_mail_'~signin,mail['name'],'up')}}
+{% if total=='0' %}<div class="menuItem">{% else %}<div class="menuItem" style="background-color:#f08080;">{% endif %}<div><a href="/mail/{{i|trim}}">{{avatar.mau_nick(user['nick'],func.get('user_'~user['nick'],'right'))}}</a> {% if total > '0' %}({{total}}){% endif %}</div>
+<div class="sub">{{mail['comment']|slice(0,200)}} - <span class="gray">{{func.ago(mail['time']|trim)}}</span></div>
+</div>
+{% endfor %}
+{% endif %}
+{{func.paging('mail?p',p,page_max)}}
+{% endif %}
+{% else %}
+<div class="menuItem" style="background-color:#e9ccd2;"> Bạn chưa đăng nhập</div>
+{% endif %}
+{{block('end')}}

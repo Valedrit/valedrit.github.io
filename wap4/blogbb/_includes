@@ -1,0 +1,154 @@
+{% block head %}
+{% set site_description = 'Chia sẻ & Kết nối đam mê' %}
+{% set site_name = 'BlogBB - Blog Đọc Truyện Online' %}
+{% set author = 'Valerat02' %}
+{% set ver = '0.2.1' %}
+{% set url = get_uri_segments() %}
+{% set homelink = 'http://blogbb.gq' %}
+{% set valeric = get_data('blog')[0].data|json_decode %}
+<!DOCTYPE html> 
+<html>
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<meta http-equiv=”content-language” content=”vi” />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="description" content="{{desc|default(site_description)}}...">
+<meta content='cộng đồng, đọc truyện, doc truyen, truyện ngắn, truyen ngan, truyenngan, tình bạn, tinh ban, tinhban, tình yêu, tinh yeu, tinhyeu, danh ngôn hay, danh ngon, câu nói hay, cau noi hay, status tâm trạng, stt tâm trạng, stt, stt tam trang, cong dong, thu thuat, viwap, wap4, wap4.co' name='keywords'/>
+<meta property="og:title" content="{{title|default(site_name)}}">
+<meta property="og:description" content="{{desc|default(site_description)}}...">
+<meta property="og:image" content="{{thumb|default('http://valeric.viwap.com/images/blog.jpeg')}}">
+<meta property="og:url" content="{{'http://'~valeric.domain~'/'~get_uri_segments()|join('/')}}">
+ <meta property="og:site_name" content="{{site_name}}"> 
+<meta name="theme-color" content="#22292F">
+ <meta name="author" content="{{author}}">
+ <meta name="robots" content="index,follow">
+ <meta name="googlebot" content="index,follow">
+ <meta name="google" content="notranslate">
+<meta name=’revisit-after’ content=’1 days’ />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="dns-prefetch" href="https://i.imgur.com">
+ <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com"> <link rel="dns-prefetch" href="https://raw.githack.com">
+ <link rel="dns-prefetch" href="https://images.weserv.nl">
+<link rel = "canonical" href = "{{homelink}}"/>
+ <link rel="preload" href="/css/main.css" as="style">
+ <link type="text/css" rel="stylesheet" href="/css/main.css" media="all,handheld" />
+ <link type="text/css" rel="stylesheet" href="/css/timeline.css" media="all,handheld" />
+ <link rel="shortcut icon" href="/images/valeric-icon.png" /> 
+<title> {{title|default(site_name)}} </title> </head>
+ <body style="-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none"> <style>.list1,.list2,.phdr{background:#fff;border:solid #e9e9e9;border-width:0 1px 1px;padding:5px}input+input{margin-left:4px}input,textarea,select,button,.btn{background:#fff;border:1px solid #d8d8d8;color:#686868;margin:1px;padding:4px;border-radius:3px}button,.btn{display:inline-block;text-align:center}a.btn:hover{color:#686868}button,input[type=submit]{cursor:pointer;background:#e3e8ea;padding:3px 5px}button:hover{border-color:#000}textarea{width:100%;resize:vertical}</style> 
+<div id="wrap">
+{% if url[0]=='home' or not url[0] %}
+{% else %}
+<nav id="nav">
+<div id="nav-list"> 
+ <a href="/">Trang Chủ</a>
+ <a href="/about">Thông Tin</a>
+ <a href="/search">Tìm Kiếm</a>
+ <a href="/tools">Công Cụ</a> 
+</div> 
+<footer>
+ <span>version {{ver}}</span> 
+</footer> 
+</nav>
+ <a id="nav-menu">
+  <div id="menu"></div>
+ </a>
+{% endif %}
+<header id="header" class="parent justify-spaceBetween">
+ <div class="inner w100 relative">
+ <span class="f-left">
+ <a href="/"> <h1> <span>Blog</span>BB</h1> </a>
+ </span>
+ <span id="nav-links" class="absolute right bottom">
+{% if url[0]=='home' or not url[0] %}
+<form action="../search/?id={{get_get('id')}}" method="get">
+<input type="text" name="id" value="{{get_get('id')}}">
+<input class="btn btn-primary" type="submit" value=" Tìm kiếm "></form>
+{% else %}
+<a href="/about">Thông Tin</a>
+<a href="/search">Tìm Kiếm</a> 
+<a href="/up-img">Up Ảnh</a> 
+<a href="/tools">Công Cụ</a>
+{% endif %}
+</span> 
+</div> 
+</header> 
+</div>
+{% if url[0]=='home' or not url[0] %}
+{% else %}
+<div id="container">
+<main>
+{% endif %}
+{% endblock %}
+
+{% block end %}
+{% import '_functions' as func %}
+{% import 'about' as about %}
+{% set signin = func.signin()|trim %}
+{% set valeric = get_data('blog')[0].data|json_decode %}
+{% set url = get_uri_segments() %}
+
+ {% include 'stats' %}
+
+{% if url[0]=='home' or not url[0] %}
+{% else %}
+</main>
+</div>
+{% endif %}
+<style>body{-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}</style> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/0.5.0/balloon.min.css"> <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/1.0.0/quicklink.umd.js" type="641f351537e26735a375118b-text/javascript"></script> <script type="641f351537e26735a375118b-text/javascript"> window.addEventListener('load', () =>{ quicklink(); }); </script> <script type="641f351537e26735a375118b-text/javascript"> (function(e,t,n,i,s,a,c){e[n]=e[n]||function(){(e[n].q=e[n].q||[]).push(arguments)} ;a=t.createElement(i);c=t.getElementsByTagName(i)[0];a.async=true;a.src=s ;c.parentNode.insertBefore(a,c) })(window,document,"galite","script","https://cdnjs.cloudflare.com/ajax/libs/ga-lite/2.0.1/ga-lite.min.js"); galite('create', 'UA-123383139-1', 'auto'); galite('send', 'pageview'); </script> <footer><span>@2018{#{{"now"|date('Y')}}#} BlogBB {% if signin and signin in ['admin','valerat02','brook','dai'] %} - <a href="/apanel">Quản lý</a>{% endif %}</span></footer> <script src="https://dyutibarma.github.io/monochrome/js/main.js" type="641f351537e26735a375118b-text/javascript"></script> </div> <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/a2bd7673/cloudflare-static/rocket-loader.min.js" data-cf-settings="641f351537e26735a375118b-|49" defer=""></script>
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/turbolinks/5.1.1/turbolinks.js"></script>#}  </body> </html>
+{% endblock %}
+
+{% block toolbar %}
+<style>.redactor_box{border:1px solid #D7EDFC;border-bottom:none;position:relative;overflow:hidden}.redactor_toolbar{background:url(/images/form-button-white-25px.png) repeat-x scroll center top #F0F7FC;padding:0 0 0 2px;margin:0;border-bottom:1px solid #D7EDFC;position:relative;left:0;top:0;line-height:0;list-style:outside none none;overflow:hidden}.redactor_btn_group{background:url(/images/form-button-white-25px.png) repeat-x scroll center top #F0F7FC;padding:1px;margin:0;border:1px solid #D7EDFC;border-radius:3px;overflow:hidden;box-shadow:1px 1px 1px rgba(255,255,255,0.5);outline:medium none;list-style:none outside none;margin:2px 2px 2px 2px;float:left}.redactor_toolbar li a{text-align:center;border:1px solid transparent;box-sizing:border-box;display:block;cursor:pointer;outline:medium none;width:24px;height:24px;float:left;outline:medium none}.redactor_toolbar li a:hover{background-color:#FCFCFF;border-color:#A5CAE4;border-radius:3px;outline:medium none}</style>
+<div class="redactor_box" style="border-bottom: 1px solid #D7EDFC;margin-bottom:2px;"><style>.color a {float:left; display: block; width: 10px; height: 10px; margin: 1px; border: 1px solid black;}</div></style>
+<script language="JavaScript" type="text/javascript">function tag(e,t){if(document.selection)document.form.msg.focus(),document.form.document.selection.createRange().text=e+document.form.document.selection.createRange().text+t;else if(null!=document.forms.form.elements.msg.selectionStart){var n=document.forms.form.elements.msg,o=n.value,s=n.selectionStart,l=n.selectionEnd-n.selectionStart;n.value=o.substr(0,s)+e+o.substr(s,l)+t+o.substr(s+l)}else document.form.msg.value+=e+t}function show_hide(e){obj=document.getElementById(e),"none"==obj.style.display?obj.style.display="block":obj.style.display="none"}</script>
+            <ul class="redactor_toolbar">
+			<li class="redactor_btn_group">
+			<a href="javascript:tag('[b]', '[/b]')"><i class="fa fa-bold" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[i]', '[/i]')"><i class="fa fa-italic" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[u]', '[/u]')"><i class="fa fa-underline" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[s]', '[/s]')"><i class="fa fa-strikethrough" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+            <a href="javascript:tag('[center]', '[/center]')"><i class="fa fa-align-center" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[right]', '[/right]')"><i class="fa fa-align-right" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[code]', '[/code]')"><i class="fa fa-code" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[url=]', '[/url]')"><i class="fa fa-link" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[d]', '[/d]')"><i class="fa fa-download" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+	    <a href="javascript:tag('[img]', '[/img]', '')"><i class="fa fa-picture-o" aria-hidden="true"></i></a>
+			<a href="javascript:show_hide('upload')"><i class="fa fa-cloud-upload" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[mp3]', '[/mp3]', '')"><i class="fa fa-music" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[video]', '[/video]', '')"><i class="fa fa-play-circle" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+
+	    <a href="javascript:tag('[scloud]', '[/scloud]', '')"><i class="fa fa-soundcloud" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[youtube]', '[/youtube]', '')"><i class="fa fa-youtube-play" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[gdrive]', '[/gdrive]', '')"><i class="fa fa-google" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[gits]', '[/gits]', '')"><i class="fa fa-git-square" aria-hidden="true"></i></a>
+
+			</li>
+			<li class="redactor_btn_group">
+	    <a href="javascript:show_hide('sm');"><i class="fa fa-smile-o" aria-hidden="true"></i></a>
+			</li>
+            </ul>
+<div id="upload" style="display:none;"><iframe style="border: 0px none;" src="/ua/"  width="100%" height="auto"><p>Trình duyệt của bạn không hỗ trợ iframe.</p></iframe></div>
+
+
+<div id="sm" style="display:none">
+	    <a href="javascript:tag(':qoopepe1', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe1.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe3', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe3.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe4', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe4.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe5', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe5.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe8', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe8.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe10', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe10.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe13', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe13.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe14', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe14.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe16', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe16.gif" width="60px" /></a>
+	    <a href="javascript:tag(':qoopepe17', ':'); show_hide('sm');"><img src="https://antitopian.netlify.com/images/qoopepe17.gif" width="60px" /></a>
+ </div>
+</div>
+{% endblock %}

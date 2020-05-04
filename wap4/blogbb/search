@@ -1,0 +1,63 @@
+{% use '_includes' %}
+{% import '_functions' as func %}
+{% set title = 'Tìm Kiếm' %}
+{{block('head')}}
+<article id="search"> 
+<h2 id="search">Tìm Kiếm</h2> 
+<p>
+<div class="alert alert-info max-width"><div class="form-group">
+<form action="" method="get"><input type="text" name="id" value="{{get_get('id')}}">
+<input class="btn btn-primary" type="submit" value=" Tìm kiếm "></form>
+</div>
+</div>
+{% set data = func.get('list_file')|split('@') %}
+{% set data1 %}{% for i in data %}{% set link = get_data('file_'~i|trim)[0].data|json_decode %}{% set key = get_get('id') %}
+{% if (key|length>'0' and key|lower in link.name|trim|lower) or (key|length>'0' and key|lower in link.doc|trim|lower) %}{% if loop.last==false %}{{i|trim}}.{% endif %}{% endif %}{% endfor %}{% endset %}
+{% set dem = data1|split('.')|length-1 %}
+{% if dem > '0' %}
+<div class="list-group">
+<div class="list-group-item list-group-item-danger">
+Đã tìm được <b>{{dem}}</b> kết quả !
+</div>
+</div>
+{% else %}
+{% if get_get('id')|length > 0 %}
+<div class="list-group">
+<div class="list-group-item list-group-item-danger">
+Không tìm thấy kết quả nào
+</div>
+</div>
+{% endif %}
+{% endif %}
+ {% set data=data1|split('.') %}
+ {% set total=data|length-1 %} 
+{% set per = '5' %}
+ {% set page_max=total//per %}
+{% if total//per != total/per %}
+{% set page_max=total//per+1 %}
+{% endif %}
+ {% set url=get_get('p') %}
+{% set p=url|default('1') %} 
+
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*per-per %}
+{% set key = get_get('id') %}
+</article>
+<ul id="posts">
+ {% for id in data|slice(0,total)|slice(st,per) %}
+{% set link = get_data('file_'~id|trim)[0].data|json_decode %}
+<li class="post"> <h2><a href="/cfs/{{func.rwurl(link.name)}}.{{id|trim}}.html">{{link.name|raw}}</a></h2> <time datetime="{{link.time|date('Y',"Asia/Ho_Chi_Minh")}}-{{link.time|date('m',"Asia/Ho_Chi_Minh")}}-{{link.time|date('d',"Asia/Ho_Chi_Minh")}}T00:00:00+00:00" class="by-line"> <i>{{link.time|date('d',"Asia/Ho_Chi_Minh")}} {{link.time|date('M',"Asia/Ho_Chi_Minh")}} {{link.time|date('Y',"Asia/Ho_Chi_Minh")}}</i> </time> <p>{{link.doc|replace({'[b]':'','[/b]':'','[i]':'','[/i]':'','[s]':'','[/s]':'','[u]':'','[/u]':'','[center]':'','[/center]':''})|slice(0,200)}}...</p> </li> 
+{% endfor %}
+</ul>
+{% if page_max>per %}
+{% set page_max=per %} 
+ {% endif %} 
+ {{func.paging('search?id='~get_get('id')~'&p',p,page_max)}}
+</div>
+</p>
+{{block('end')}}

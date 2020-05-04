@@ -1,0 +1,118 @@
+{% block head %}
+{% import '_functions' as func %}
+{% import '_avatar' as avatar %}
+{% set url = get_uri_segments() %}
+{% set signin = func.signin()|trim %}
+{% set user = get_data('user_'~signin)[0].data|json_decode %}
+{% set run = get_data('forum')[0].data|json_decode %}
+{% set site_description = 'Chia sẻ & Kết nối đam mê' %}
+{% set site_name = 'Khu vực cộng đồng | BlogBB' %}
+{% set author = 'Valerat02' %}
+{% set ver = '1.0.0' %}
+{% set mail = func.get('new_mail_'~signin)|split('@') %}
+{% set totalmail = mail|length-1 %}
+{% if signin %}
+{% if get_data_count('notification_'~signin)==0 %}
+{% for i in 1..30 %}
+{% set save=save_data('notification_'~signin~'_'~i,{"time":'now'|date('U'),"comment":"chúc bạn online vui vẻ","view":"no"}|json_encode) %}
+{% endfor %}
+{% set save=save_data('notification_'~signin,' 30 @ 29 @ 28 @ 27 @ 26 @ 25 @ 24 @ 23 @ 22 @ 21 @ 20 @  19 @  18 @  17 @  16 @  15 @  14 @  13 @  12 @  11 @  10 @  9 @  8 @  7 @  6 @  5 @  4 @  3 @  2 @  1 @ ') %}
+{% endif %}
+{% endif %}
+{% set notifi %}
+{% for k in func.get('notification_'~signin)|trim|split('@') %}
+{% set k = k|trim %}
+{% set u = get_data('notification_'~signin~'_'~k|trim)[0].data|json_decode %}
+{% if u['view']=='no' %}
+{{k}}.
+{% endif %}
+{% endfor %}
+{% endset %}
+{#<script language="javascript" type="text/javascript"> 
+window.location.href="/home"; 
+</script> 
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/home">#}
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<meta http-equiv=”content-language” content=”vi” />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="description" content="{{desc|default(site_description)}}...">
+<meta content='cộng đồng, đọc truyện, doc truyen, truyện ngắn, truyen ngan, truyenngan, tình bạn, tinh ban, tinhban, tình yêu, tinh yeu, tinhyeu, danh ngôn hay, danh ngon, câu nói hay, cau noi hay, status tâm trạng, stt tâm trạng, stt, stt tam trang, cong dong, thu thuat, viwap, wap4, wap4.co' name='keywords'/>
+ <meta property="og:site_name" content="{{title|default(site_name)}}"> 
+<meta property="og:image" content="{{img|default('http://valeric.viwap.com/images/blog.jpeg')}}">
+<meta name="theme-color" content="#22292F">
+ <meta name="author" content="{{author}}">
+ <meta name="robots" content="index,follow">
+ <meta name="googlebot" content="index,follow">
+ <meta name="google" content="notranslate">
+<meta name=’revisit-after’ content=’1 days’ />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="dns-prefetch" href="https://i.imgur.com">
+ <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com"> <link rel="dns-prefetch" href="https://raw.githack.com">
+ <link rel="dns-prefetch" href="https://images.weserv.nl">
+<link rel = "canonical" href = "{{current_url|split('/').0~"//"~current_url|split('/').2}}"/>
+ <link rel="preload" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/css/forum.css" as="style">
+ <link type="text/css" rel="stylesheet" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/css/forum.css" media="all,handheld" />
+{% if url[0]=='registration.php' %}
+{% if get_cookie('captcha')=='' or get_cookie('captcha')==null %}
+{{set_cookie('captcha',random(1000..9999))|lower}}
+{% endif %}
+{% endif %}
+ <link rel="shortcut icon" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/images/valeric-icon.png" /> 
+<title> {{title|default(site_name)}} </title> </head>
+ <body style="-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none"> 
+<div class="header"><a href="/community"><b><big><font color="white">Cộng đồng BlogBB</font></big></b></a></div><div class="tmn"><a href="/">Trang Blog</a> » <a href="/community" style="color:darkviolet"><b>Diễn đàn</b></a> » <a href="/acat">Chuyên mục</a><br/> 
+{% if signin %}
+{{func.add('user_'~signin,'on','now'|date('U', 'Asia/Ho_Chi_Minh'))}}
+{{func.up('show_online',signin,'up')}}
+<a href="/search">Tìm kiếm</a> | <a href="/smile">Biểu tượng vui</a> | <a href="/community/faq.html">F.A.Q</a> | <a href="/logout.php">Thoát</a>
+{% else %}
+<a href="/login.php">Đăng nhập</a> | <a href="/registration.php?act=faq">Đăng ký</a> | <a href="/search">Tìm kiếm</a> 
+{% endif %}
+</div>
+ <div class="maintxt"> 
+{% if signin and user['sex']!='' and url[0]!='farm' and url[0]!='user' %}
+<div class="phdr">Nhân vật {{avatar.mau_nick(signin,user.right)}}</div>
+<div class="menuItem">
+<p>
+<a href="/user"><b><i class="fa fa-user"></i> Tường nhà</b></a> | 
+{% if (notifi|split('.')|length-1)|trim > '1' %}<a href="/notification"><b><i class="fa fa-bell"></i> Thông báo <font color="red">[ {{(notifi|split('.')|length-1)|trim}} ]</font></b></a>{% elseif (notifi|split('.')|length-1)|trim == '1' %}<a href="/notification"><b><i class="fa fa-bell"></i> Thông báo <font color="red">[ 1 ]</font></b></a>{% else %}<a href="/notification"> 
+<b><i class="fa fa-bell
+"></i> Thông báo</b></a>{% endif %}
+ | {% if totalmail > '1' %}<a href="/mail"><b><i class="fa fa-envelope"></i> Tin nhắn <font color="red">[ {{totalmail}} ]</font></b></a>{% elseif totalmail == '1' %}<a href="/mail/{{mail[0]}}"><b><i class="fa fa-envelope"></i> Tin nhắn <font color="red">[ 1 ]</font></b></a>{% else %}<a href="/mail"><b><i class="fa fa-envelope"></i> Tin nhắn</b></a>{% endif %}
+</p>
+<hr/>
+<p>
+<table id="{{signin}}" cellpadding="0" cellspacing="1"><tr>
+<td width="auto"><img class="avt" src="{{avatar.avtdefault(signin)|trim}}" width="40" height="40" /></td><td>
+{{avatar.sex(sign)}} <a href="/user/{{signin}}.html">
+{% if func.get(signin,'ban') =='1' %}<s>{{user.name}}</s>{% else %}{{avatar.mau_nick(signin,user.right)}}{% endif %}
+</a> ({{avatar.rights(user.right)}}) <br/>
+<i class="fa fa-trophy"></i> Điểm tín nhiệm: {{user.tn|default(0)}}<br/>
+<i class="fa fa-money"></i> {{user.xu|number_format}} xu / {{user.luong|number_format}} ngân lượng<br/>
+<i class="fa fa-gavel"></i> Sức mạnh: {{user.sm}}<br/>
+<i class="fa fa-fire"></i> {{user['hp'].min}} / {{user['hp'].max}} HP<br/>
+<i class="fa fa-credit-card-alt"></i> Thẻ quay số: {{user.quayso}}
+</td>
+</tr></table>
+</p>
+<hr/>
+<p>
+<a href="/farm"><span style="font-weight:bold; color:green;"><i class="fa fa-envira"></i> Nông trại</span></a> | <a href="/chest"><span style="font-weight:bold; color:blue;"><i class="fa fa-archive"></i> Rương đồ</span></a> | <a href="/games"><span style="font-weight:bold; color:darkviolet;"><i class="fa fa-gamepad"></i> Khu giải trí</span></a>
+</p>
+</div>
+{{func.add('user_'~signin,'on',"now"|date('U'))}}
+{% endif %}
+{% endblock %}
+
+{% block end %}
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/0.5.0/balloon.min.css"> <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/1.0.0/quicklink.umd.js" type="641f351537e26735a375118b-text/javascript"></script> <script type="641f351537e26735a375118b-text/javascript"> window.addEventListener('load', () =>{ quicklink(); }); </script> <script type="641f351537e26735a375118b-text/javascript"> (function(e,t,n,i,s,a,c){e[n]=e[n]||function(){(e[n].q=e[n].q||[]).push(arguments)} ;a=t.createElement(i);c=t.getElementsByTagName(i)[0];a.async=true;a.src=s ;c.parentNode.insertBefore(a,c) })(window,document,"galite","script","https://cdnjs.cloudflare.com/ajax/libs/ga-lite/2.0.1/ga-lite.min.js"); galite('create', 'UA-123383139-1', 'auto'); galite('send', 'pageview'); </script>
+ <div class="footer">- Copyright by: BlogBB<sup>&nbsp;©</sup><br/>- Ip: {{ip()}}<br/>- Thanks to BlogBB community<br/>- Ads: <a ref="dofollow" href="http://jekyllrb.gq" target="_blank" title="jekyllrb.gq">jekyllrb.gq </a>
+{#<p align="center">Powered by <b>Wap4</b>.</p>#}
+</div>
+ </body>
+</html>
+{% endblock %}

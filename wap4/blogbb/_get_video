@@ -1,0 +1,33 @@
+{% from '_functions' import get,rwurl,bbcode %}
+<p>
+<div class="alert alert-info max-width"><div class="form-group">
+<form action="{{ dir.video_search.search }}" id="search_form" method="post" class="search-form"> 
+<input class="inp-text" type="text" name="q" placeholder="Nhập video mà bạn đang tìm kiếm..." size="30"/> 
+<input class="btn btn-info" type="submit" value="Search"/> 
+</form>
+</div>
+</div>
+{% if videos|length > 0 %} 
+{% for video in videos %} 
+<a href="{{ dir.video_search.single }}/{{ rwurl(video.title|raw) }}/{{ video.video_id }}">
+<div class="z"><div class="pr">
+<img src="http://i.ytimg.com/vi/{{ video.video_id }}/mqdefault.jpg" alt="{{ video.title|raw }}"><span>{{ video.channel|raw }}</span>
+</div>
+<div class="list-group-item">{{ video.title|raw }}</div>
+</div>
+</a>
+{% endfor %} 
+<div style="clear:both;"></div>
+{#
+{% if pages|length > 0 %}
+           <div class="pagination" align="center">
+                {% for page, link in pages %}
+             {% if current_page == page %}<span class="page">{{ page }}</span>{% else %} <a class="page active" href="{{ link }}">{{ page }}</a>{% endif %}
+                {% endfor %}
+             </div>
+        {% endif %}
+ #}
+{% else %} 
+<small>Sorry, the system is currently experiencing dificulties. Please try again later</small> 
+{% endif %} 
+</p> 

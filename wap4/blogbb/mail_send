@@ -1,0 +1,47 @@
+{% import '_functions' as func %}
+{% set login = func.signin()|trim %}
+{% set url = get_uri_segments() %}
+{% set user = get_data('user_'~login)[0].data|json_decode %}
+{% set forum = get_data('forum')[0].data|json_decode %}
+{% if request_method()|lower == "post" %}
+{% set msg = get_post('msg') %}
+{% set id = forum['mail']|trim+1 %}
+{% set doc = {"name":login,"id":id,"comment":msg,"time":"now"|date("U"),"view":"no"}|json_encode %}
+{% if msg|length < '3' or msg|length > '16000' %}
+<div class="menuItem"> Nội dung không hợp lệ</div>
+{% else %}
+{% if msg and user['n_mail']|trim|raw!=msg %}
+{% set save=save_data('mail_'~id,doc) %}
+{{func.add('user_'~login,'n_mail',msg)}}
+{# list me #}
+{{func.up('list_mail_'~login,url[1],'up')}}
+{# kt list me #}
+{# list you #}
+{{func.up('list_mail_'~url[1],login,'up')}}
+{# kt list you #}
+{# show ds me #}
+{{func.up('mail_'~login~'_'~url[1],id,'up')}}
+{# kt show ds me #}
+{# show ds you #}
+{{func.up('mail_'~url[1]~'_'~login,id,'up')}}
+{# kt show ds you #}
+{# new inbox #}
+{{func.up('new_mail_'~url[1],login,'up')}}
+{# kt new mail #}
+{# up + inbox #}
+{{func.add('forum','mail',id)}}
+{# kt up+ inbox #}
+{% else %}
+<div class="rmenu">Gửi tin nhắn thất bại !</div>
+{% endif %}
+{% endif %}
+
+
+
+{% endif %}
+{{func.del('new_mail_'~login,url[1],'up')}}
+<div class="menu">
+
+{% include 'toolbar' %}
+<form name="form" action="" method="post"><textarea name="msg"></textarea><br/><input type="submit" value="Gửi"></form></div>
+</div>

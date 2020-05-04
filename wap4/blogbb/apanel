@@ -1,0 +1,149 @@
+{% use '_includes' %}
+{% import '_functions' as func %}
+{% set url = get_uri_segments() %}
+{% set df = url[1]|split('.')[0]|trim %}
+{% set idf = url[1]|split('.')[1]|trim %}
+{% set f = get_data('file_'~idf)[0].data|json_decode %}
+{% set signin = func.signin()|trim %}
+{% set run = get_data('blog')[0].data|json_decode %}
+{% if signin %}
+{% set title = 'Quản Lý Bài Viết' %}
+{% else %}
+{% set title = 'Đăng Nhập' %}
+{% endif %}
+{{block('head')}}
+<article id="page"> 
+<h2 id="apanel">{{title}}</h2> 
+<p>
+{% if signin and signin in ['admin','valerat02','brook','dai'] %}
+{% if func.rwurl(f.name)|trim==df and url[1]!='' %}
+{% set rename = get_post('rename') %}
+{% set redoc = get_post('redoc') %}
+{# chỉnh sửa bài viết #}
+{% if request_method()|lower == "post" %}
+<div class="f">
+{% if rename|length > '200' or rename|length < '3' %}
+Độ dài tên bản lưu không hợp lệ.<br/>Tối thiểu: 3 kí tự<br/> Tối đa: 200 kí tự<br/><a href="/apanel/{{url[1]}}">Quay lại</a>
+{% elseif redoc|length > '16000' or redoc|length < '5' %}
+Độ dài nội dung bản lưu không hợp lệ.<br/>Tối thiểu: 5 kí tự<br/> Tối đa: 16000 kí tự<br/><a href="/">Quay lại</a>
+{% else %}
+{% if rename|trim != f.name or redoc|trim != f.doc %}
+{{func.add('file_'~idf,'name',rename)}}
+{{func.add('file_'~idf,'doc',redoc)}}
+{% endif %}
+<script language="javascript" type="text/javascript"> 
+window.location.href="/cfs/{{url[1]}}"; 
+</script> 
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/cfs/{{url[1]}}">
+{% endif %}
+</div>
+{% endif %}
+<center><big>Chỉnh sửa bài viết</big></center>
+<div class="alert alert-info max-width"><div class="form-group">
+<form method="post"><div class="f">Tên bài viết (Max.200)</div><input name="rename" class="list-group-item" value="{{f.name}}"><div class="f">Nội dung (Max.16000)</div><textarea name="redoc" class="list-group-item" rows="12">{{f.doc}}</textarea><br><input class="btn btn-primary" type="submit" value="Lưu lại"></form>
+</div>
+</div>
+{% else %}
+{# viết bài #}
+{% set name = get_post('name') %}
+{% set doc = get_post('doc') %}
+{% if request_method()|lower == "post" %}
+<div class="f">
+{% if name|length > '200' or name|length < '3' %}
+Độ dài tên bản lưu không hợp lệ.<br/>Tối thiểu: 3 kí tự<br/> Tối đa: 200 kí tự<br/><a href="/apanel">Quay lại</a>
+{% elseif doc|length > '16000' or doc|length < '5' %}
+Độ dài nội dung bản lưu không hợp lệ.<br/>Tối thiểu: 5 kí tự<br/> Tối đa: 16000 kí tự<br/><a href="/">Quay lại</a>
+{% else %}
+{% set file = {"name":name,"doc":doc,"time":"now"|date("U")} %}
+{% set save = save_data( "file_"~(run.file|trim+1), file|json_encode ) %}
+{{func.up('list_file',run.file|trim+1,'up')}}
+<script language="javascript" type="text/javascript"> 
+window.location.href="/"; 
+</script> 
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/">
+{{func.add('blog','file',run.file|trim+1)}}
+{% endif %}
+</div>
+{% endif %}
+<div class="alert alert-info max-width"><div class="form-group">
+<form method="post"><div class="f">Tên bài viết (Max.200)</div>
+<input name="name" class="list-group-item"><div class="f">Nội dung (Max.16000)</div>
+<textarea name="doc" class="list-group-item" rows="12"></textarea><br><input class="btn btn-primary" type="submit" value="Lưu"></form>
+</div>
+</div>
+
+{# 10 bài viết mới nhất #}
+{% if run.file|trim >= 1 %}
+{% set data=func.get('list_file')|trim|split('@') %}
+{% set total=data|length-1 %} 
+{% set page_max=total//10 %}
+{% if total//10 != total/10 %}
+{% set page_max=total//10+1 %}
+{% endif %}
+{% set url=get_uri_segments() %}
+{% set p=get_get('p')|default(1) %}
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*10-10 %}
+<div class="list-group">
+<div class="list-group-item list-group-item-info">
+Số bài viết: <b>{{run.file-(run['trash']|default(0))}}</b>, IP: <b>{{ip()}}</b>
+</div>
+</div>
+<ul>
+{% for i in data|slice(0,total)|slice(st,10) %}
+{% set i = i|trim %}
+{% set info = get_data('file_'~i)[0].data|json_decode %}
+{% if info.name and info.doc %}
+<li class="list-group">
+<a href="/cfs/{{func.rwurl(info.name)|trim}}.{{i}}.html" id="load">{{info.name|raw}}</a>
+</li>
+{% endif %}
+{% endfor %}
+</ul>
+{% else %}
+<center>
+<p><font color="red">Thư viện lưu trữ rỗng !</font></p>
+</center>
+{% endif %}
+{% endif %}
+{% else %}
+<center>
+{# đăng nhập vào trang quản lý #}
+{% set user=get_post('user') %}
+{% set pass=get_post('pass') %}
+{% if request_method()|lower == "post" %} 
+{% if user and pass %}
+{% if get_data_count('user_'~func.rwurl(user))==0 %}
+<div><font color="red">Không tồn tại cấu hình blog.</font></div>
+{% else %}
+{% if func.get('user_'~func.rwurl(user),'pass')|replace({'&amp;':'&'})!=func.ma_hoa(pass, 'encode')|trim %}
+<div><font color="red">Mật khẩu không đúng.</font></div>
+{% else %}
+<div><font color="green">Đăng nhập thành công.</font></div>
+{{ set_cookie('token',func.get('user_'~func.rwurl(user),'token')|trim) }} 
+<script language="javascript" type="text/javascript"> 
+window.location.href="/apanel"; 
+</script> 
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/apanel">
+{% endif %}
+{% endif %}
+{% else %}
+<div> Vui lòng điền đầy đủ thông tin.</div>
+   {% endif %}
+{% endif %}
+<div class="t"></div>
+<div class="alert alert-info max-width"><div class="form-group">
+<form method="post" action=""><div class="f">Tài khoản:</div><input type="text" name="user" autofocus><div class="f">Mật khẩu:</div><input type="password"  name="pass" autofocus>
+<div><input class="btn btn-primary" type="submit" name="submit" value="Đăng nhập"></div></form>
+</div>
+</div>
+</center>
+{% endif %}
+</p>
+</article>
+{{block('end')}}
