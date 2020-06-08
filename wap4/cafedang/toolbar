@@ -1,0 +1,53 @@
+{% import '_functions' as func %}
+{% set login = func.login()|trim %}
+{% set user = get_data('user_'~login)[0].data|json_decode %}
+{% set total = user['smile']|trim|split('.')|length-1 %}
+<style>.redactor_box{border:1px solid #696969;border-bottom:none;position:relative;overflow:hidden}.redactor_toolbar{background:url(/images/form-button-white-25px.png) repeat-x scroll center top #a9a9a9;padding:0 0 0 2px;margin:0;border-bottom:1px solid #696969;position:relative;left:0;top:0;line-height:0;list-style:outside none none;overflow:hidden}.redactor_btn_group{background:url(/images/form-button-white-25px.png) repeat-x scroll center top #a9a9a9;padding:1px;margin:0;border:1px solid #000;border-radius:3px;overflow:hidden;box-shadow:1px 1px 1px rgba(255,255,255,0.5);outline:medium none;list-style:none outside none;margin:2px 2px 2px 2px;float:left}.redactor_toolbar li a{text-align:center;border:1px solid transparent;box-sizing:border-box;display:block;cursor:pointer;outline:medium none;width:24px;height:24px;float:left;outline:medium none}.redactor_toolbar li a:hover{background-color:#FCFCFF;border-color:#A5CAE4;border-radius:3px;outline:medium none}
+</style>
+<div class="redactor_box" style="border-bottom: 1px solid #696969;margin-bottom:2px;"><style>.color a {float:left; display: block; width: 10px; height: 10px; margin: 1px; border: 1px solid black;}</div></style>
+{#<script language="JavaScript" type="text/javascript">function tag(e,t){if(document.selection)document.form.msg.focus(),document.form.document.selection.createRange().text=e+document.form.document.selection.createRange().text+t;else if(null!=document.forms.form.elements.msg.selectionStart){var n=document.forms.form.elements.msg,o=n.value,s=n.selectionStart,l=n.selectionEnd-n.selectionStart;n.value=o.substr(0,s)+e+o.substr(s,l)+t+o.substr(s+l)}else document.form.msg.value+=e+t}function show_hide(e){obj=document.getElementById(e),"none"==obj.style.display?obj.style.display="block":obj.style.display="none"}</script>#}
+            <ul class="redactor_toolbar">
+			<li class="redactor_btn_group">
+			<a href="javascript:tag('[b]', '[/b]')"><i class="fa fa-bold" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[i]', '[/i]')"><i class="fa fa-italic" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[u]', '[/u]')"><i class="fa fa-underline" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[s]', '[/s]')"><i class="fa fa-strikethrough" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+            <a href="javascript:tag('[center]', '[/center]')"><i class="fa fa-align-center" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[right]', '[/right]')"><i class="fa fa-align-right" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[code]', '[/code]')"><i class="fa fa-code" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[url=]', '[/url]')"><i class="fa fa-link" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[d]', '[/d]')"><i class="fa fa-download" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+	    <a href="javascript:tag('[img]', '[/img]', '')"><i class="fa fa-picture-o" aria-hidden="true"></i></a>
+			<a href="javascript:show_hide('upload')"><i class="fa fa-cloud-upload" aria-hidden="true"></i></a>
+	    {#<a href="javascript:tag('[mp3]', '[/mp3]', '')"><i class="fa fa-music" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[video]', '[/video]', '')"><i class="fa fa-play-circle" aria-hidden="true"></i></a>#}
+			</li>
+			{#<li class="redactor_btn_group">
+
+	    <a href="javascript:tag('[scloud]', '[/scloud]', '')"><i class="fa fa-soundcloud" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[youtube]', '[/youtube]', '')"><i class="fa fa-youtube-play" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[gdrive]', '[/gdrive]', '')"><i class="fa fa-google" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[gist]', '[/gist]', '')"><i class="fa fa-git-square" aria-hidden="true"></i></a>
+
+			</li>#}
+			<li class="redactor_btn_group">
+	    <a href="javascript:show_hide('sm');"><i class="fa fa-smile-o" aria-hidden="true"></i></a>
+			</li>
+            </ul>
+<div id="upload" style="display:none;"><iframe style="border: 0px none;" src="/imgur"  width="100%" height="auto"><p>Trình duyệt của bạn không hỗ trợ iframe.</p></iframe></div>
+
+
+<div id="sm" style="display:none">
+{% if user['smile']!='' and (user['smile']|trim|split('.')|length-1) >= 1 %}
+	 {% for i in 1..total %}
+{% set i = i|trim-1 %}
+	    <a href="javascript:tag(':{{user['smile']|trim|split('.')[i]}}', ':'); show_hide('sm');"><img src="https://moleys.github.io/assets/images/{{user['smile']|trim|split('.')[i]}}.png" width="50px" /></a>
+	  {% endfor %}
+{% else %}
+<a href="javascript:tag(':pepe{{i}}', ':'); show_hide('sm');">Bạn chưa có smile cá nhân. <a href="/smile">[ + Thêm mới ]</a>
+{% endif %}
+ </div>

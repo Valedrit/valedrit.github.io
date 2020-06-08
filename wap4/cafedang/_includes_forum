@@ -1,0 +1,115 @@
+{% block head %}
+{% import '_functions' as func %}
+{% from 'function.twig' import add,mi_add,slug,time,description %}
+{% import '_avatar' as avatar %}
+{% from 'func.twig' import mi_get,mi_up,k_del,get,html_decode %}
+{% import '_avatar' as avatar %}
+{% set url = get_uri_segments() %}
+{% set signin = func.signin()|trim %}
+{% set user = get_data('user_'~signin)[0].data|json_decode %}
+{% set run = get_data('forum')[0].data|json_decode %}
+{% set library = get_data('library')[0].data|json_decode %}
+{% set site_description = 'Chia sẻ & Kết nối đam mê' %}
+{% set site_name = 'Cà Phê Đắng' %}
+{% set author = 'Valerat02' %}
+{% set ver = '1.0.0' %}
+{% set mail = func.get('new_mail_'~signin)|split('@') %}
+{% set totalmail = mail|length-1 %}
+{% if signin %}
+{% if get_data_count('library')==0 %}
+{% set save=save_data('library',{"apple":"no"}|json_encode) %}
+{% endif %}
+{% endif %}
+{% set notifi= func.get('notification_'~signin)|trim|split('@')|reverse %}{% set no=notifi|length-1 %}{% set notification=0 %}{% for i in notifi|slice(0,no)|slice(0,300) %}{% set ntf = get_data('notification_'~signin~'_'~i|trim)|last.data|json_decode %}{% if ntf['view']!='1' %}{% set notification=notification|trim+1 %}{% endif %}{% endfor %}
+{#<script language="javascript" type="text/javascript"> 
+window.location.href="/home"; 
+</script> 
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/home">#}
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<meta http-equiv=”content-language” content=”vi” />
+{#<script type="text/javascript"> if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i)) { var viewportmeta = document.querySelector('meta[name="viewport"]'); if (viewportmeta) { viewportmeta.content = 'width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0'; document.body.addEventListener('gesturestart', function () { viewportmeta.content = 'width=device-width, minimum-scale=0.25, maximum-scale=1.6'; }, false); } } </script>#}
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=yes">
+<meta name="HandheldFriendly" content="true" />
+<meta name="MobileOptimized" content="width" />
+ <meta name="description" content="{{desc|default(site_description)}}...">
+<meta content='cộng đồng, đọc truyện, doc truyen, truyện ngắn, truyen ngan, truyenngan, tình bạn, tinh ban, tinhban, tình yêu, tinh yeu, tinhyeu, danh ngôn hay, danh ngon, câu nói hay, cau noi hay, status tâm trạng, stt tâm trạng, stt, stt tam trang, cong dong, thu thuat, viwap, wap4, wap4.co, wap chat, chat, wapego' name='keywords'/>
+ <meta property="og:site_name" content="{{title|default(site_name)}}"> 
+<meta property="og:image" content="{{img|default(''~(current_url|split('/').0~"//"~current_url|split('/').2)~'/images/blog.jpeg')}}">
+<meta name="theme-color" content="#22292F">
+ <meta name="author" content="{{author}}">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+ <meta name="robots" content="index,follow">
+ <meta name="googlebot" content="index,follow">
+ <meta name="google" content="notranslate">
+<meta name=’revisit-after’ content=’1 days’ />
+ <meta name="format-detection" content="telephone=no">
+ <link rel="dns-prefetch" href="https://i.imgur.com">
+ <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com"> <link rel="dns-prefetch" href="https://raw.githack.com">
+ <link rel="dns-prefetch" href="https://images.weserv.nl">
+<link rel = "canonical" href = "{{current_url|split('/').0~"//"~current_url|split('/').2}}"/>
+ <link rel="preload" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/css/forum.css" as="style">
+<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+ <style>{% include '_CSS' %}</style>
+{% if url[0]=='registration.php' %}
+{% if get_cookie('captcha')=='' or get_cookie('captcha')==null %}
+{{set_cookie('captcha',random(1000..9999))|lower}}
+{% endif %}
+{% endif %}
+ <link rel="shortcut icon" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/images/cafedang-icon.png" type="image/x-icon"/><link rel="icon" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/images/cafedang-icon.png"  type="image/x-icon"> 
+<title> {{title|default(site_name)}} </title> </head>
+ <body style="color:#5f6366;-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none"> 
+<div style="background-color: #141518;padding:4px;border:1px solid #141518;box-shadow: 0px 0px 10px #343434;">
+{% if signin %}
+<div class="bck fzm ur mld ue cn fzmsg cmt photog"align="left" id="head"> <div class="nav-menu"> <ul> <li> <a{% if url[0]=='' or url[0]=='community' %} class="active"{% endif %} href="/community"> <i class="fa fa-home"></i></a> </li><li><a{% if url[0]=='user' %} class="active"{% endif %} href="/user/{{signin}}.html"><i class="fa fa-user"></i></a> </li> <li class="butt">{% if notification > '1' %}<a{% if url[0]=='notification' %} class="active"{% endif %} href="/notification"><i class="fa fa-bell"></i> <i class="button__badge">{{notification}}</i></a>{% elseif notification == '1' %}<a{% if url[0]=='notification' %} class="active"{% endif %} href="/notification"><i class="fa fa-bell"></i> <i class="button__badge">1</i></a>{% else %}<a{% if url[0]=='notification' %} class="active"{% endif %} href="/notification"> 
+<i class="fa fa-bell
+"></i></a>{% endif %}</a> </li><li class="butt">{% if totalmail > '1' %}<a{% if url[0]=='mail' %} class="active"{% endif %} href="/mail"><i class="fa fa-envelope"></i> <i class="button__badge">{{totalmail}}</i></a>{% elseif totalmail == '1' %}<a{% if url[0]=='mail' %} class="active"{% endif %} href="/mail/{{mail[0]}}"><i class="fa fa-envelope"></i> <i class="button__badge">1</i></a>{% else %}<a{% if url[0]=='mail' %} class="active"{% endif %} href="/mail"><i class="fa fa-envelope"></i> </a>{% endif %}</li><li style="float:right;"><a{% if url[0] in ['games','chest','avatar','LOL','xc','farm'] %} class="active"{% endif %} href="/games"><i class="fa fa-list" aria-hidden="true"></i></a></li></ul> </div></div>
+{% if url[0]!='user' %}
+<style>.avtimgs{width:60px;height:60px;border-style:solid;border-width:9px;-webkit-border-image:url({{avatar.avtdefault(signin)|trim}}) 10 round}</style>
+<div class=profileCard> <div style="background-color: #6a7582;border-left: 0px solid #1a1a1b;border-right: 0px solid #1a1a1b; border-bottom: 0px solid #1a1a1b;border-radius: 0px 0px 0px 0px;border-top-width: 0;padding: 0px;"color: #f3f7fd;text-decoration: none;text-shadow: 0 0 1px #000000;align=left> <table cellpadding=0 cellspacing=0 width="100%" height=110px style=" height: 200px; width: 100%;background-size: cover;background-repeat: no-repeat; background-position: 50% 50%;border-radius: 0px 0px 0px 0px;position: relative;background-image:url('{{avatar.avtdefault(signin,'abia')|trim}}');"> <div class=profileInfo> <tr valign=top> <td width=38 style="background: #0000004f;padding: 13px;border-left: 115px solid #0000002e;"> <div style="position: absolute;z-index: 1;bottom: 0px;left: 0;right: 0;padding-left: 5px;line-height: 50px;"> <a href="javascript:show_hide('info');"> <img src="{{avatar.avtdefault(signin)|trim}}" class=avt width=80 height=80 alt="{{user.name}}"></a></td></div> <td><div><b> <div style="color: #fff; text-decoration: none; text-shadow: 0 0 1px #000000; position: absolute; z-index: 1; bottom: 7px; left: 0; right: 0; padding-right: 7px; line-height: 40px; text-align: right;">{{avatar.mau_nick(signin,user.right)}} (@{{signin}})</div> </b></div> <div style="color: #bec7d6; text-decoration: none; text-shadow: 0 0 1px #000000; position: absolute; z-index: 1; bottom: 5px; left: 0; right: 0; padding-right: 7px; line-height: 10px; text-align: right; font-size: 12px;"><span class="status">{{user.stt|default('Bạn chưa có tiểu sử­!')}} - <a style="color:white" href="/user/{{signin}}.html?update=stt">Cập nhật</a>.</span></div></div> </td> <td align=right><div> <div class=hovergallery> <a style="color:white" href="/user/{{signin}}.html?act=abia&u=edit"><big><i class="fa fa-refresh" aria-hidden=true></i></big></a></div> </div></td> </tr> </table> </div> </div>
+{% endif %}
+<div id="info" style="display:none">
+<div class="menuItem">
+<table id="{{signin}}" cellpadding="0" cellspacing="1"><tr>
+<td>
+<i class="fa fa-address-card"></i> Hiện đang là: {{avatar.rights(user.right)}} {% if user['right']>='7' or library[signin]=='yes' %}(<a href="/manager{% if library[signin]=='yes' %}/post{% endif %}">{% if library[signin]=='yes' %}Viết bài blog{% else %}Quản lý blog{% endif %}</a>){% endif %}<br/>
+<i class="fa fa-trophy"></i> Điểm vinh danh: {{user.tn|default(0)}}<br/>
+<i class="fa fa-money"></i> {{user.xu|number_format}} xu / {{user.luong|number_format}} ngân lượng<br/>
+<i class="fa fa-gavel"></i> Sức mạnh: {{user.sm}}<br/>
+<i class="fa fa-fire"></i> {{user['hp'].min}} / {{user['hp'].max}} HP<br/>
+<i class="fa fa-credit-card-alt"></i> Thẻ quay số: {{user.quayso}}
+</td>
+</tr></table>
+</div></div>
+{#
+{% if user['birth'].n =='' or user['birth'].d =='' and user['birth'].m =='' or user['birth'].y =='' %}
+<div style="color: #000000;border: 1px dashed #CECFCE;background: #ffffcc;padding: 5px;margin-right: auto;margin-left: auto;" align="center">Cậu chưa cập nhật thông tin cá nhân cơ bản. <br/><a href="/user/{{login}}.html?update=profile">Click dzô đây để cập nhật đi nà (つ≧▽≦)つ </a></div>{% endif %}
+#}
+{% if signin and user['sex']!='' and url[0]!='farm' and url[0]!='user' %}
+{{func.add('user_'~signin,'on','now'|date('U', 'Asia/Ho_Chi_Minh'))}}
+{{func.up('show_online',signin,'up')}}
+{% endif %}
+
+{% else %}
+<div class="bck fzm ur mld ue cn fzmsg cmt photog"align="left" id="head"> <div class="nav-menu"><ul><li><a{% if url[0]=='' or url[0]=='community' %} class="active"{% endif %} href="/community"> <i class="fa fa-home"></i></a></li><li><a{% if url[0]=='login.php' %} class="active"{% endif %} href="/login.php"> <i class="fa fa-sign-in" aria-hidden="true"></i></a></li><li><a{% if url[0]=='registration.php' %} class="active"{% endif %} href="/registration.php"> <i class="fa fa-user-plus" aria-hidden="true"></i></a></li><li style="float:right;"><a{% if url[0] in ['library'] %} class="active"{% endif %} href="/library"><i class="fa fa-list" aria-hidden="true"></i></a></li></ul></div></div>
+{% endif %}
+{% endblock %}
+
+{% block end %}
+{% import '_functions' as func %}
+{% set url = get_uri_segments() %}
+{{func.music()}}
+{% if func.signin()|trim and url[0]!='search.php' %}
+<script language="JavaScript" type="text/javascript">function tag(e,t){if(document.selection)document.form.msg.focus(),document.form.document.selection.createRange().text=e+document.form.document.selection.createRange().text+t;else if(null!=document.forms.form.elements.msg.selectionStart){var n=document.forms.form.elements.msg,o=n.value,s=n.selectionStart,l=n.selectionEnd-n.selectionStart;n.value=o.substr(0,s)+e+o.substr(s,l)+t+o.substr(s+l)}else document.form.msg.value+=e+t}function show_hide(e){obj=document.getElementById(e),"none"==obj.style.display?obj.style.display="block":obj.style.display="none"}</script>
+{% elseif not  func.signin() or url[0]=='search.php' %}
+<script>!function(){var Z={load:function E(c,f){var g=function d(){return window.XMLHttpRequest?new window.XMLHttpRequest:new ActiveXObject("Microsoft.XMLHTTP")}();g.open("GET",c,!0),g.onreadystatechange=function a(h,i){return function(){if(4===h.readyState&&200===h.status){try{i(null,JSON.parse(h.responseText))}catch(e){i(e,null)}}}}(g,f),g.send()}};(function D(a){if(!function d(e){return !!e&&"undefined"!=typeof e.required&&e.required instanceof Array}(a)){throw new Error("-- OptionsValidator: required options missing")}if(!(this instanceof D)){return new D(a)}var c=a.required;this.getRequiredOptions=function(){return c},this.validate=function(f){var g=[];return c.forEach(function(e){"undefined"==typeof f[e]&&g.push(e)}),g}});var R=function Y(d,g){var j=g.length,f=d.length;if(j<f){return !1}if(f===j){return d===g}d:for(var c=0,h=0;c<f;c++){for(var a=d.charCodeAt(c);h<j;){if(g.charCodeAt(h++)===a){continue d}}return !1}return !0},aa=new function H(){this.matches=function(a,c){return R(c.toLowerCase(),a.toLowerCase())}};var K=new function k(){this.matches=function(c,a){return !!c&&(c=c.trim().toLowerCase(),(a=a.trim().toLowerCase()).split(" ").filter(function(d){return 0<=c.indexOf(d)}).length===a.split(" ").length)}};var U={put:function B(c){if(ac(c)){return I(c)}if(function d(e){return Boolean(e)&&"[object Array]"===Object.prototype.toString.call(e)}(c)){return function a(f){var h=[];ad();for(var i=0,g=f.length;i<g;i++){ac(f[i])&&h.push(I(f[i]))}return h}(c)}return undefined},clear:ad,search:function b(d){return d?function c(g,j,m,h){for(var f=[],l=0;l<g.length&&f.length<h.limit;l++){var a=ab(g[l],j,m,h);a&&f.push(a)}return f}(Q,d,G.searchStrategy,G).sort(G.sort):[]},setOptions:function N(a){(G=a||{}).fuzzy=a.fuzzy||!1,G.limit=a.limit||10,G.searchStrategy=a.fuzzy?aa:K,G.sort=a.sort||W}};function W(){return 0}var Q=[],G={};function ad(){return Q.length=0,Q}function ac(a){return Boolean(a)&&"[object Object]"===Object.prototype.toString.call(a)}function I(a){return Q.push(a),Q}function ab(c,f,g,d){for(var a in c){if(!P(c[a],d.exclude)&&g.matches(c[a],f)){return c}}}function P(c,f){for(var h=!1,d=0,a=(f=f||[]).length;d<a;d++){var g=f[d];!h&&new RegExp(c).test(g)&&(h=!0)}return h}G.fuzzy=!1,G.limit=10,G.searchStrategy=G.fuzzy?aa:K,G.sort=W;var X={compile:function V(a){return T.template.replace(T.pattern,function(c,d){var f=T.middleware(d,a[d],T.template);return void 0!==f?f:a[d]||c})},setOptions:function J(a){T.pattern=a.pattern||T.pattern,T.template=a.template||T.template,"function"==typeof a.middleware&&(T.middleware=a.middleware)}},T={};T.pattern=/\{(.*?)\}/g,T.template="",T.middleware=function(){};var F={merge:function A(a,d){var f={};for(var c in a){f[c]=a[c],"undefined"!=typeof d[c]&&(f[c]=d[c])}return f},isJSON:function x(a){try{return !!(a instanceof Object&&JSON.parse(JSON.stringify(a)))}catch(c){return !1}}};!function(p){var e={searchInput:null,resultsContainer:null,json:[],success:Function.prototype,searchResultTemplate:'<div class="menu"><a href="{url}"><i class="fa fa-rss" aria-hidden="true"></i> {title}</a></div>',templateMiddleware:Function.prototype,sortMiddleware:function(){return 0},noResultsText:"<div class='menu'>Không tìm thấy nội dung.</div>",limit:10,fuzzy:!1,exclude:[]},f=["searchInput","resultsContainer","json"],d=function j(c){if(!function i(n){return !!n&&"undefined"!=typeof n.required&&n.required instanceof Array}(c)){throw new Error("-- OptionsValidator: required options missing")}if(!(this instanceof j)){return new j(c)}var a=c.required;this.getRequiredOptions=function(){return a},this.validate=function(o){var r=[];return a.forEach(function(n){"undefined"==typeof o[n]&&r.push(n)}),r}}({required:f});function g(a){e.success(a),U.put(a),function c(){e.searchInput.addEventListener("keyup",function(i){(function n(o){return -1===[13,16,20,37,38,39,40,91].indexOf(o)})(i.which)&&(m(),h(i.target.value))})}()}function m(){e.resultsContainer.innerHTML=""}function l(a){e.resultsContainer.innerHTML+=a}function h(c){(function n(i){return i&&0<i.length})(c)&&(m(),function a(i,s){var u=i.length;if(0===u){return l(e.noResultsText)}for(var o=0;o<u;o++){i[o].query=s,l(X.compile(i[o]))}}(U.search(c),c))}function q(a){throw new Error("SimpleJekyllSearch --- "+a)}p.SimpleJekyllSearch=function(a){return 0<d.validate(a).length&&q("You must specify the following required options: "+f),e=F.merge(e,a),X.setOptions({template:e.searchResultTemplate,middleware:e.templateMiddleware}),U.setOptions({fuzzy:e.fuzzy,limit:e.limit,sort:e.sortMiddleware}),F.isJSON(e.json)?g(e.json):function c(i){Z.load(i,function(n,o){n&&q("failed to get JSON ("+i+")"),g(o)})}(e.json),{search:h}}}(window)}();</script>
+<script type="text/javascript">var sjs = SimpleJekyllSearch({searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('results-container'), json: '{{current_url|split('/').0~"//"~current_url|split('/').2}}/search.json'})</script>
+{% endif %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/0.5.0/balloon.min.css"> <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/1.0.0/quicklink.umd.js" type="641f351537e26735a375118b-text/javascript"></script> <script type="641f351537e26735a375118b-text/javascript"> window.addEventListener('load', () =>{ quicklink(); }); </script> <script type="641f351537e26735a375118b-text/javascript"> (function(e,t,n,i,s,a,c){e[n]=e[n]||function(){(e[n].q=e[n].q||[]).push(arguments)} ;a=t.createElement(i);c=t.getElementsByTagName(i)[0];a.async=true;a.src=s ;c.parentNode.insertBefore(a,c) })(window,document,"galite","script","https://cdnjs.cloudflare.com/ajax/libs/ga-lite/2.0.1/ga-lite.min.js"); galite('create', 'UA-123383139-1', 'auto'); galite('send', 'pageview'); </script>
+ <div class="footer"><div align="center">BlogBB Community <sup>&nbsp;©</sup> 2018</div><a href="#head"><button type="button" class="button-up">Quay lại đầu trang</button></a><div align="center">Powered by <b>Wap4</b>.</div>{#<div align="right">Text link: <a ref="dofollow" href="http://jekyllrb.gq" target="_blank" title="jekyllrb.gq">jekyllrb.gq </a></div>#}
+</div>
+ </body>
+</html>
+{% endblock %}

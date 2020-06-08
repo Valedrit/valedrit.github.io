@@ -1,0 +1,238 @@
+{% use '_includes_forum' %}
+{% import '_functions' as func %}
+{% import '_avatar' as avatar %}
+{% import 'news' as news %}
+{% set url = get_uri_segments() %}
+{% set signin = func.signin()|trim %}
+{% set user = get_data('user_'~signin)[0].data|json_decode %}
+{% set run = get_data('forum')[0].data|json_decode %}
+{% if url[1]=='faq.html' %}
+{% set title='Quy định sử dụng' %}
+{% else %}
+{% set title = 'Cà Phê Đắng' %}
+{% endif %}
+{{block('head')}}
+{% if url[1]=='faq.html' %}
+<div class="phdr"><b>Điều khoản</b></div>
+<div class="list-login"><p>- <b>CẤM</b> Đăng tin quảng cáo.<br/>- <b>CẤM</b> Đăng nội dung liên quan đến vấn đề phân biệt sắc tộc, tôn giáo, quốc gia.<br/>- <b>KHÔNG</b> Đăng nội dung thô tục, khiêu dâm, quấy rối tình dục, vu khống, đe dọa người khác.<br/>- <b>KHÔNG ĐƯỢC</b> Đăng nội dung xúc phạm một chủ thể cụ thể, đặc biệt là thành viên trong diễn đàn.<br/>- <b>KHÔNG ĐƯỢC</b> Đăng bài cùng một nội dung nhiều lần trong một hay nhiều chủ đề khác nhau.<br/>- <b>KHÔNG ĐƯỢC</b> Đăng lại bài viết hoặc tạo lại chủ đề đã bị xóa bởi Ban quản trị.<br/>- <b>KHÔNG ĐƯỢC</b> Đăng bài có nội dung không liên quan đến tiêu đề.<br/>- <b>TUYỆT ĐỐI CẤM và KHÔNG CHẤP NHẬN</b> Các hành vi cố tình giả mạo thành viên khác (hoặc các thành viên trên các diễn đàn, blog khác, chính trị gia, chủ tịch nước, chủ tịch quốc hội,...) với bất kỳ mục đích nào.<br/><br/>Quy định trên đây có thể thay đổi bất kỳ lúc nào.<br />Quy định này áp dụng cho tất cả các thành viên và Ban quản trị, thành viên vi phạm nhiều lần sẽ bị ban, vi phạm nặng có thể dẫn đến xóa bỏ tài khoản vĩnh viễn.</p></div>
+<div class="phdr" id="word"><b>Chức năng soạn thảo</b></div>
+<div class="list-login"><div class="rmenu"><p>Chỉ có thể sử dụng HTML khi viết bài ở thư viện.</p><p>Sử dụng BBCODE và SMILE ở tất cả chức năng có liên quan đến soạn thảo trong trang web, như: chat, nhắn tin, viết bài ở thư viện.</p></div><p>[url=liên kết]chỉ mục[/url]: dẫn chỉ mục từ liên kết khác</p><br/><p>[b]in đậm văn bản[/b]: <b>in đậm văn bản</b></p><br/><p>[i]in nghiêng văn bản[/i]: <i>in nghiêng văn bản</i></p><br/><p>[s]gạch ngang văn bản[/s]: <s>gạch ngang văn bản</s></p><br/><p>[u]gạch dưới văn bản[/u]: <u>gạch dưới văn bản</u></p><br/><p>[d]liên kết tải xuống[/d]: tải xuống</p><br/><p>[code]mã[/code]: hiển thị một đoạn mã vào khung</p><br/><p>[center]căn giữa[/center]: <center>căn giữa</center></p><br/><p>[left]căn lề trái[/left]: căn lề trái</p><br/><p>[white]chữ màu trắng[/white]: <font color="white">chữ màu trắng</font></p><br/><p>[red]chữ màu đỏ[/red]: <font color="red">chữ màu đỏ</font></p><br/><p>[blue]chữ màu xanh nước biển[/blue]: <font color="blue">chữ màu xanh nước biển</font></p><br/><p>[green]chữ màu xanh lá[/green]: <font color="green">chữ màu xanh lá</font></p></div><div>
+{% else %}
+{% if signin %}
+{% if user.sex=='' %}
+<div class="phdr" align="center">CHÀO MỪNG BẠN ĐẾN VỚI CÀFÊĐẮNG</div>
+<div class="menu">
+<center>
+<h1 class="animated shake delay-1s infinite">XÁC ĐỊNH GIỚI TÍNH</h1>
+</center>
+<div class="rmenu">
+<p><b><font style="color:red">* Chú ý:</font> Cộng đồng cần biết giới tính của bạn trong cuộc sống.</b> Tuy nhiên, có một số chức năng, bạn có thể sử dụng tính năng LGBT. Chúng tôi không ép buộc! Cảm ơn đã đọc chú ý này.</p>
+<p>
+{% if request_method()|lower == "post" and user.sex=='' %}
+{% if get_post('nameh')!='' and get_post('sex')!='' and get_post('nameh')!='Admin' and get_post('nameh')!='admin' and get_post('nameh')!='Trùm' %}
+{% set chest1 = {"ao":"0.","quan":"0.","canh":"0.","docamtay":"0.","khac":"0.","khuonmat":"0.","kinh":"0.","mat":"0.","matna":"0.","non":"0.","nen":"0.","thucung":"0.","toc":"0."} %}
+{% set chest2 = {"ao":"0.","quan":"0.","canh":"0.","docamtay":"0.","khac":"0.","khuonmat":"0.","kinh":"0.","mat":"0.","matna":"0.","non":"0.","nen":"0.","thucung":"0.","toc":"14."} %}
+{% set chest3 = {"ao":"0.","quan":"0.","canh":"0.","docamtay":"0.","khac":"0.","khuonmat":"0.","kinh":"0.","mat":"0.","matna":"0.","non":"0.","nen":"0.","thucung":"0.","toc":"7."} %}
+{{func.add('user_'~signin,'sex',get_post('sex'))}}
+{{func.add('user_'~signin,'name',get_post('nameh'))}}
+{% if get_post('sex')=='female' and get_post('nameh')!='' %}
+{{func.add('user_'~signin,'avatar','0.0.0.0.0.0.0.0.0.0.0.0.14')}}
+{{func.add('user_'~signin,'chest',chest2)}}
+{{func.add('user_'~signin,'avt','x1')}}
+{% elseif get_post('sex')=='male' and get_post('nameh')!='' %}
+{{func.add('user_'~signin,'avatar','0.0.0.0.0.0.0.0.0.0.0.0.0')}}
+{{func.add('user_'~signin,'chest',chest1)}}
+{{func.add('user_'~signin,'avt','x7')}}
+{% elseif get_post('sex')=='transgender' and get_post('nameh')!='' %}
+{{func.add('user_'~signin,'avatar','0.0.0.0.0.0.0.0.0.0.0.0.7')}}
+{{func.add('user_'~signin,'chest',chest3)}}
+{{func.add('user_'~signin,'avt','x2')}}
+{% endif %}
+Xác nhận thành công! <a href="/community">Click để về trang cộng đồng</a>
+{% else %}
+<div>Độ dài của tên hiển thị không hợp lệ hoặc lựa chọn không chính xác! <a href="/community">Click để xác nhận lại</a></div>
+{% endif %}
+{% else %}
+<form method="post" action="">
+<center>
+<div>Còn bây giờ... hãy xác nhận giới tính của bạn !</div>
+<select name="sex"><option value="male">Liệt dương công tử</option> <option value="female">Dâm cô nương</option>
+<option value="transgender">Không xác định</option>
+</select>
+<div>Tên hiển thị <b style="color:red">(**)</b>:</div>
+<input type="text" name="nameh" value="" required>
+<p><input class="btn btn-primary" type="submit" name="submit" value="Xác nhận"></p>
+</center>
+<div><b style="color:red">(**)</b>: Giới hạn kí tự (Min.3 - Max.10). Miễn phí 1 lần duy nhất, sau này có thể đổi lại bằng thẻ đổi tên. Hãy cân nhắc kĩ trước khi nhập nội dung này!</div>
+</form>
+{% endif %}
+</p>
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+{% else %}
+{% if user['xu']<='5000' and "now"|date('d.m.Y','Asia/Ho_Chi_Minh')==user.reg|date('d.m.Y','Asia/Ho_Chi_Minh') %}
+<p>
+<div class="c">
+Chào mừng bạn đến với <b>Cà Phê Đắng</b>. Hãy trở thành một thành viên tích cực với việc đầu tiên là chăm sóc nông trại!
+</div>
+</p>
+{% endif %}
+<div id="right">
+<div class="phdr"><i class="fa fa-globe" aria-hidden="true"></i> Tin tức - Thông báo</div>
+<div class="rmenu">{% if get_get('music')=='on' %}{{set_cookie('music','yes')}}{{set_cookie('music_name','null')}}{{set_cookie('music_link','null')}}Bật nghe nhạc thành công! <a href="/mp3">Nhấp vào đây</a> để chọn bài bạn nhé :)){% elseif get_get('music')=='off' %}{{delete_cookie('music','yes')}}{{delete_cookie('music_name','null')}}{{delete_cookie('music_link','null')}}Bạn đã tắt nhạc! Bạn có muốn bật lại không? (<a href="?music=on">bật</a>){% else %}{% if get_cookie('music')!='yes' %}Bạn có muốn bật trình phát nhạc không? (<a href="?music=on">bật</a>){% else %}Bạn có muốn tắt trình phát nhạc không? (<a href="?music=off">tắt</a> / <a href="/mp3">Chọn bài</a>){% endif %}{% endif %}
+</div>
+{% set data= func.get('news')|trim|split('@')|reverse %}
+{% set total=data|length-1 %} 
+ {% set page_max=total//3 %}
+{% if total//3 != total/3 %}
+{% set page_max=total//3+1 %}
+{% endif %}
+{% set p=get_get('p')|default(1) %} 
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*3-3 %}
+{% for i in data|slice(0,total)|slice(st,3) %}{% set view = get_data('news_id_'~i|trim)[0].data|json_decode %}<div class="list-login">
+<big>{{view['title']}}</big><br/>{{func.bbcode(view['doc'])}}</div>{% endfor %}
+<div class="menu"><a href="/news"><font color="violet"><i class="fa fa-newspaper-o" aria-hidden="true"></i> Lưu trữ tin tức ({{total|default(0)}})</font></a> </div>
+</div>
+<div id="left">
+{% include 'guestbook' %}
+</div>
+<div style="clear:both"></div>
+</div>
+{% endif %}
+
+
+
+{% else %}
+<div id="left">
+<div class="phdr" align="center">CHÀO MỪNG BẠN ĐẾN VỚI CÀFÊĐẮNG</div>
+<div class="menu" align="center">
+{#Cuộc đời nó đắng như ly cà phê, việc gì phải lừa dối bằng vị ngọt của trà sữa =))#}
+<div><img src="{{current_url|split('/').0~"//"~current_url|split('/').2}}/images/cafedang-icon.png" style="width:70px;height:70px"></div>
+√ Bạn chưa có nick chọn Đăng ký
+<br/>†↓↓↓↓↓↓↓↓†
+<br/><a href="/registration.php">→ Đăng ký miễn phí ←</a>
+<br/>√ Đã Có Nick Hãy Đăng Nhập
+<br/>†↓↓↓↓↓↓↓↓†
+<br/><a href="/login.php">→ Đăng nhập vào web ←</a>
+</div>
+<div class="phdr">Công cụ tiện ích</div>
+<div class="list-login">» <a href="/tools/s-shot.php">Chụp ảnh màn hình wap/web</a></div>
+<div class="list-login">» <a href="/tools/teamobi">Lấy ảnh nhân vật game Teamobi</a></div>
+<div class="list-login">» <a href="/tools/calculator/equation.php">Giải phương trình bậc 2 một ẩn</a></div>
+<div class="list-login">» <a href="/tools/calculator/factorial.php">Hoán vị (n giai thừa)</a> / <a href="/tools/calculator/nPr-nCr.php">Chỉnh hợp - Tổ hợp</a></div>
+</div>
+{% endif %}
+<div id="right">
+{% from 'function.twig' import time,slug,description,time %}
+{% from 'func.twig' import mi_get,get,html_decode %}
+{% set data = mi_get('show_blog')|split(' @ ')|reverse  %}
+{% set idfirst = mi_get('show_blog')|split(' @ ')|reverse[0]|trim %}
+{% set per = '10' %}
+{% set total=data|length-1 %}
+{% set page_max=total//per %}
+{% if total//per != total/per %}
+{% set page_max=total//per+1 %}
+{% endif %}
+{% set url = get_uri_segments() %}
+{% set p=get_get('p')|default(1) %}
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*per-per %}
+{% if total == '0' %}
+{% else %}
+<div class="phdr"><i class="fa fa-file-text-o" aria-hidden="true"></i> Những bài blog mới nhất <div style="float:right"><a href="/search.php"><i class="fa fa-search" aria-hidden="true"></i></a></div></div>
+{% for i in data|slice(0,total)|slice(st,per) %}
+{% set name = get('blog_'~i,'title') %}
+{% set id = get('blog_'~i,'id')|trim %}
+{% set category = get('blog_'~i,'category') %}
+{% set slug = get('blog_'~i,'slug') %}
+{% set cat = get('category_'~category,'ten') %}
+{% set catid = get('category_'~category,'id') %}
+{% set catslug = get('category_'~category,'slug') %}
+{% set time = get('blog_'~i,'time')|trim %}
+{% set view = get('blog_'~i,'view')|trim %}
+{% set content = get('blog_'~i,'content','raw') %}
+{% set mota = description(content) %}
+{% set thumb = get('blog_'~i,'thumb')|trim %}
+{% set cmt = get('blog_'~i,'comment_num')|trim %}
+{% if signin %}
+<div class="menu-topic pre"><i class="fa fa-gratipay" aria-hidden="true"></i> <a href="/library/{{id}}-{{slug}}/"> {{func.pre(name)}}</a></div>
+{% else %}
+{% set pre = name|split('[')[1]|split(']')[0] %}
+<div class="blog"><div class="list1"><i class="fa fa-gratipay" aria-hidden="true"></i> <a href="/library/{{id}}-{{slug}}/"> {% if pre!='' %}{{name|replace({(pre):'','[':'',']':''})}}{% else %}{{name}}{% endif %}</a></div>
+<table width="100%"><tr><td width="30%" align="center"><img  src="{{func.get('blog_'~i,'content')|split('[img]')[1]|split('[/img]')[0]|default('/images/blog.jpeg')}}" alt="{{name}}" itemprop="image" width="80%" height="50" /></td><td width="70%"><i class="fa fa-clock-o" aria-hidden="true"></i> Đăng lúc: {{time(time)}}<br/><i class="fa fa-book" aria-hidden="true"></i> Chuyên mục: {{cat}} {% if name|split('[')[1]|split(']')[0]!='' %}, thể loại: {{name|split('[')[1]|split(']')[0]}}{% endif %}</td></tr></table></div>
+{% endif %}
+{% endfor %}
+{{func.paging(''~url|join('/')~'?p',p,page_max)}}
+{% if not signin %}</div>{% endif %}
+{% endif %}
+{% set login = signin %}
+{% set last_comment %}<div class="phdr">{% if login %}{% else %}<i class="fa fa-comments-o" aria-hidden="true"></i>{% endif %} Bình luận gần đây</div>
+{% set dataa= func.get('blog_comment')|trim|split('@')|reverse %}
+{% set totall=dataa|length-1 %} 
+{% for i in dataa|slice(0,totall)|slice(0,5) %}
+{% set cmt = get_data('comment_'~i|trim)|last.data|json_decode %}
+<div class="list-login">{% if get_data_count('user_'~cmt['n'])!='0' %}{{avatar.mau_nick(cmt['n'],func.get('user_'~cmt['n'],'right'))}}{% else %}<b>{{cmt['n']}}</b>{% endif %}: {{func.bbcode(cmt['c'])}} <font color="gray"><small>({{avatar.ago(cmt['ago'])}})</small></font></div>
+{% endfor %}{% endset %}
+{% if login %}
+<div id="select-tool">
+<div class="phdr">Công cụ tiện ích</div>
+<div class="list-login">» <a href="/tools/s-shot.php">Chụp ảnh màn hình wap/web</a></div>
+<div class="list-login">» <a href="/tools/teamobi">Lấy ảnh nhân vật game Teamobi</a></div>
+<div class="list-login">» <a href="/tools/calculator/equation.php">Giải phương trình bậc 2 một ẩn</a></div>
+<div class="list-login">» <a href="/tools/calculator/factorial.php">Hoán vị (n giai thừa)</a> / <a href="/tools/calculator/nPr-nCr.php">Chỉnh hợp - Tổ hợp</a></div>
+<div class="phdr"><b>Hoạt động gần đây</b></div>
+{% include 'recent-activities' %}
+{{last_comment}}
+</div>
+{% else %}
+<div id="left">
+{{last_comment}}
+<div class="phdr"><i class="fa fa-search" aria-hidden="true"></i> Tìm kiếm</div>
+<div class="menu" style="text-align: center;"><form action="" method="get"><input type="text" id="search-input" name="key" value="{{get_get('key')}}" placeholder="Nhập từ khóa cần tìm...">{#  <button type="submit"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>#}</form></div>
+<div id="results-container"></div>
+{% endif %}
+
+{% set on=func.get('show_online')|trim %}
+{% set online = {} %}
+{% for v in on|split('@') %}
+{% if loop.last==false %}
+{% if func.get('user_'~v|trim,'on')|trim > "now"|date("U")-300 %}
+{% set list_on %}<a href="/user/{{v|trim}}.html">{{avatar.mau_nick(v|trim,func.get('user_'~v|trim,'right'))}}</a>{% endset %}
+{% set online=online|merge({(v|trim):list_on}) %}
+{% else %}
+{{func.del('show_online',v|trim,'up')}}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% if login and login not in on|split('@') %}
+{{func.up('show_online',login,'up')}}
+{% endif %}
+
+{% if user.sex!='' or not login %}
+<div class="phdr"><i class="fa fa-users" aria-hidden="true"></i> Trực tuyến [{{online|length}}{% if func.get('online_total')|split('@')|length-2 >= 1 %}/{{func.get('online_total')|split('@')|length-2}}{% endif %}] {% if login %}| <a href="/logout.php"><i class="fa fa-power-off" aria-hidden="true"></i> Đăng xuất</a>{% endif %}
+</div>
+{% if online|length > '0' %}
+<div class="list-login">{{online|sort|join(', ')|raw}}{% include '_stats' %}</div>
+{% else %}
+<div class="list-login">Không có thành viên nào trực tuyến</div>
+{% endif %}
+{% endif %}
+{% endif %}
+
+
+</div>
+<div style="clear:both"></div>
+{{block('end')}}

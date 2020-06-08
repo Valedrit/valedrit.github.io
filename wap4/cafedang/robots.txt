@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /manager
+Disallow: /user
+Allow: /
+Allow: /community
+Sitemap: {{current_url|split('/').0~"//"~current_url|split('/').2}}/sitemap.xml

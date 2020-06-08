@@ -1,0 +1,185 @@
+{% use '_includes_forum' %}
+{% import '_functions' as func %}
+{% import '_avatar' as avatar %}
+{% set url = get_uri_segments() %}
+{% set signin = func.signin()|trim %}
+{% set login = signin %}
+{% set user = get_data('user_'~signin)[0].data|json_decode %}
+{% set run = get_data('forum')[0].data|json_decode %}
+{% set act = get_get('act') %}
+{% set select = get_get('seclect') %}
+{% if act=='eggs' %}
+{% set title = 'Đập trứng' %}
+{% elseif act=='baodanh' %}
+{% set title = 'Báo danh hằng ngày' %}
+{% elseif act=='pro' %}
+{% set title = 'Mua PRO' %}
+{% elseif act=='vip' %}
+{% set title = 'Mua VIP' %}
+{% else %}
+{% set title = 'Danh mục' %}
+{% endif %}
+{% if signin %}
+{{block('head')}}
+<div class="phdr" id="g">{% if act!='' %}<a href="/games#g">{% endif %}Khu giải trí{% if act!='' %}</a> » {{title}}{% endif %}</div>
+{% if act=="eggs" %}
+{% set t = get_get('t') %}
+{% set dap = get_get('dap') %}
+{% set xu=user['xu'] %}
+{% set nick = avatar.mau_nick(signin,user['right']) %}
+{% if t == 'ketqua' %}
+{% set ketqua=random(4) %}
+{% set mayman = random(4) %}
+{% set tien = 500 %}
+{% set tientrung=tien*3 %}
+{% if dap < 0 or dap > 4 %}
+<div class="rmenu">Ui từ 0-4 thui bạn ui!<br/>&laquo; <a href="../games/?act=eggs">Quay lại</a></div>
+{% elseif xu < '200' %}
+<div class="rmenu">Bạn không đủ xu</div>
+{% else %}
+{% if dap == ketqua %}
+{% if dap == mayman %}
+<div class="list-login"><center><img src="https://i.imgur.com/Uc1p9Ud.png"><br/></center>Xin chúc mừng {{nick}} đã đập trúng trứng {{kq}} cùng trúng trứng may mắn Và  nhận được x3 tiền thắng lên {{tientrung}} xu </div><div class="list1">» <a href="../games/?act=eggs">Chơi tiếp</a></div>
+{{func.add('user_'~login,'xu',func.get('user_'~login,'xu')|trim+tientrung)}}
+{% else %}
+<div class="list-login"><center><img src="https://i.imgur.com/Uc1p9Ud.png"alt="Trứng vỡ" /></center><br/>Xin chúc mừng {{nick}} đã đập trúng trứng {{kq}} Và nhận được 500 Xu
+<br />
+» <a href="../games/?act=eggs">Chơi tiếp</a>
+</div>
+ {{func.add('user_'~login,'xu',func.get('user_'~login,'xu')|trim+tien)}}
+{% endif %}
+{% else %}
+<div class="list-login"><center><img src="https://i.imgur.com/Uc1p9Ud.png" alt="Trứng vỡ" /></center><br/> Ui trứng đúng là {{ketqua}} rất tiếc bạn đã đập trật và bị trừ 200 xu
+<br />
+» <a href="../games/?act=eggs">Chơi tiếp</a>
+</div> {{func.add('user_'~login,'xu',func.get('user_'~login,'xu')|trim-200)}}
+{% endif %}
+{% endif %}
+{% else %}
+<div class="list-login">
+•&nbsp;Số dư của tài khoản: <b>{{xu}} xu</b><br />•&nbsp;Thắng sẽ được 500, thua bị trừ 200 xu.
+<br/>•&nbsp;Trong khi đập nếu may mắn trúng trứng đặc biệt sẽ được x3.
+<br />•&nbsp;Số trứng gồm 5 trứng 0-4<br />&bull; Chọn Một  Trứng:
+<br />
+{% for i in 0..4 %}
+<a href="?act=eggs&t=ketqua&dap={{i}}"><img src="https://i.imgur.com/kUc3ugb.png" alt="Trứng {{i}}" /></a>
+{% endfor %}
+</div>
+{% endif %}
+{% elseif act=='baodanh' %}
+<div class="list-login">
+<b>Lưu ý:</b> Mỗi ngày bạn chỉ có thể nhận quà một lần!
+<br/>Giá trị phần quà như sau:
+<br/>- Thành viên thường: 200 xu
+<br/>- Thành viên <span style="color:red; font-weight:bold;">[PRO]</span>: 500 xu
+<br/>- Thành viên <span style="color:red; font-weight:bold;">[VIP]</span>: 800 xu
+<br/>- Thành viên <span style="color:red; font-weight:bold;">[VIP2]</span>: 1200 xu
+<br/>- Tất cả các thành viên: 2 thẻ quay số miễn phí
+<br/>
+{% if "now"|date('d.m.Y','Asia/Ho_Chi_Minh')!=user.baodanh %}
+{% if request_method()|lower=="post" %}
+{% set sm = random(20..50) %}
+{% if user['vip']|trim==1 %}
+{% set xu = '800' %}
+{% elseif user['vip']|trim==2 %}
+{% set xu = '1200' %}
+{% elseif user['pro']|trim==1 %}
+{% set xu = '500' %}
+{% else %}
+{% set xu = '200' %}
+{% endif %}
+<p>
+Chúc mừng bạn đã nhận được <b>{{xu}}</b> xu, <b>10</b> thẻ quay số miễn phí trong quầy của chụy {{avatar.mau_nick('apple',func.get('user_apple','right'))}} tại phòng chat và {{sm}} điểm sức mạnh cho việc báo danh ngày hôm nay.
+</p>
+{{func.add('user_'~signin,'baodanh',"now"|date('d.m.Y','Asia/Ho_Chi_Minh'))}}
+{{func.add('user_'~signin,'xu',user.xu|trim+xu|trim)}}
+{{func.add('user_'~signin,'quayso',user.quayso|trim+10)}}
+{{func.add('user_'~signin,'sm',user.sm|trim+sm|trim)}}
+{% else %}
+<form method="post" action="">
+<input type="submit" name="submit" value=" Nhận quà ">
+{% endif %}
+{% else %}
+<b>Bạn đã nhận quà cho việc báo danh ngày hôm nay. Vui lòng quay lại vào ngày mai!</b>
+{% endif %}
+</div>
+{% elseif act == 'pro' %}
+<div class="list-login">
+ {% set pro=get_post('pro')|trim %}
+ {% if request_method()|lower == "post" %} 
+{% if pro %}
+{% if user['xu'] >= '1000000' and user['pro']!='1'%}
+<div class="rmenu">Mua PRO thành công <a href="../games/?act=pro">(quay lại)</a></div>
+{{func.add('user_'~login,'pro',1) }}
+{{func.add('user_'~login,'xu',user['xu']|trim-1000000)}}
+{% set comment = {"name":"apple","time":"now"|date('U'), "comment":"[b][red][PRO][/red][/b] @"~signin~" vừa gia nhập [b]PRO Team[/b] ! @"~signin~" quá PRO luôn :))"} %}
+{% set save = save_data( "event", comment|json_encode ) %}
+{% elseif user['pro']=='1' %}
+<p> Bạn hiện tại đang là thành viên <b><font color="red">[PRO]</font></b> của diễn đàn!</p>
+{% else %}
+<div class="rmenu">Bạn không đủ tiền để mua PRO <a href="../games/?act=pro">(quay lại)</a></div>
+{% endif %}
+{% endif %}
+{% endif %}
+<p>
+<center><b><font color="darkviolet">Chào mừng bạn đến với PRO Team</font></b></center>
+<br/><br/>
+Để khẳng định danh vọng, thứ hạng của bạn trên diễn đàn hãy mua danh hiệu PRO. <br/>
+{% if mpro == '' %}
+Khi có được danh hiệu <b><font color="red">[PRO]</font></b>, bạn sẽ mở được nhiều chức năng cực pro cho riêng mình!<br/>
+{% endif %}
+Giá danh hiệu <b><font color="red">[PRO]</font></b> hiện tại rất ưu đãi, chỉ với 1.000.000 xu! Còn chờ gì nữa, mại zo mại zo nào <img src="https://moleys.github.io/assets/images/qoobee2.png">
+</p>
+{% if user['xu'] >= '1000000' and user['pro']!='1' %}
+  <form method="post" action="">
+<p>
+<input type="radio" name="pro" value="pro" /> <img src="/images/pro.png"> <b><font color="red">PRO</font></b><br />
+<button>Mua PRO</button>
+</p>
+</form>
+{% elseif user['pro']==1 %}
+<p> Bạn hiện tại đang là thành viên <b><font color="red">[PRO]</font></b> của diễn đàn!</p>
+{% else %}
+<p>
+<b>Điều kiện để mua PRO:</b><br/>
+- Tiền: <b>{{user['xu']}}/<font color="red">1000000</font></b> xu ({% if user['xu'] < '1000000' %}Chưa đạt{% else %}Đã đạt{% endif %}) <br/><br/>
+Bạn chưa đạt đủ điều kiện để mua danh hiệu <b><font color="red">[PRO]</font></b><br/>
+<b><font color="orange">Hãy quay lại sau nhé!</font></b>
+</p>
+{% endif %}
+</div>
+{% else %}
+<div class="list-login">
+» <a href="../games/?act=baodanh">Báo danh hằng ngày</a>
+</div>
+<div class="list-login">
+» <a href="../farm">Nông trại vui vẻ</a> 
+</div>
+{#<div class="list-login">
+» <a href="../avatar">Cửa hàng Avatar</a> <font color="red">(beta)</font>
+</div>#}
+<div class="list-login">
+» <a href="../games/?act=pro">Mua danh hiệu <b style="color:red">[PRO]</b></a>
+</div>
+<div class="list-login">
+» <a href="../games/?act=eggs">Đập trứng may mắn</a>
+</div>
+<div class="list-login">
+» <a href="../xc">Xếp chữ online <font color="red">(beta)</font></a>
+</div>
+{#<div class="list-login">
+» <a href="../chest">Rương đồ cá nhân</a>
+</div>#}
+<div class="phdr" id="t">Công cụ tiện ích</div>
+<div class="list-login">» <a href="/tools/s-shot.php">Chụp ảnh màn hình wap/web</a></div>
+<div class="list-login">» <a href="/tools/teamobi">Lấy ảnh nhân vật game Teamobi</a></div>
+<div class="list-login">» <a href="/tools/calculator/equation.php">Giải phương trình bậc 2 một ẩn</a></div>
+<div class="list-login">» <a href="/tools/calculator/factorial.php">Hoán vị (n giai thừa)</a> / <a href="/tools/calculator/nPr-nCr.php">Chỉnh hợp - Tổ hợp</a></div>
+<div class="list-login">» <a href="/up-img">Upload Ảnh</a></div>
+<div class="phdr"><b>Hoạt động gần đây</b></div>
+{% include 'recent-activities' %}
+{% endif %}
+{{block('end')}}
+{% else %}
+{% include 'community' %}
+{% endif %}
