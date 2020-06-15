@@ -1,0 +1,19 @@
+{% use '_blocks' %}
+{% set domain = current_url|split('/').2 %}
+{% set website = domain|split('.').0 %}
+{% set logo = website|upper %}
+{% set title = 'Cài Đặt Mã Nguồn' %}
+{{block('head')}}
+<div class="card"><div class="card-content"> 
+<p>Khởi tạo entry thành công!</p>
+<p>Vui lòng xóa tệp tin <b>install</b> để hoàn tất việc cài đặt.</p>
+</div></div>
+<p align="center"><font color="red">
+{% if get_data_count("bot")==0 %}
+{{save_data("bot",{"xc":{"id":"0","time":"123456","word":logo,"raw_word":website,"end":"no"},"new_mem":"bot","time_reg":123456,"mem":0,"status":0}|json_encode)}}
+{% endif %}
+{% if get_data_count("token")==0 %}
+{{save_data("token",{"botchat":"bot"}|json_encode)}}
+{% endif %}
+</font></p>
+{{block('end')}}

@@ -1,0 +1,38 @@
+{% use '_blocks' %}
+{% import '_functions' as func %}
+{{block('head')}}
+{% set now = "now"|date("U") %}
+{% set data= func.get('guestbook')|trim|split('@') %}
+{% set total=data|length-2 %} 
+ {% set page_max=total//10 %}
+{% if total//10 != total/10 %}
+{% set page_max=total//10+1 %}
+{% endif %}
+ {% set url=get_uri_segments() %}
+{% set p=get_get('p')|default(1) %} 
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*10-10 %}
+<span class="title">Trò chuyện - Tâm sự</span><a href="/status"><span class="title_o">Tâm trạng</span></a>
+{% for id in data|slice(0,total)|slice(st,10) %}
+{% set entry = get_data('chat_'~id|trim)[0].data|json_decode %}
+{% set jun = now-time %}
+{% if jun > 1 %}
+{% set agos = entry.time|date('H:i:s -
+ d/m/y',"Asia/Ho_Chi_Minh") %}
+{% else %}
+{% set agos = 'vừa xong' %}
+{% endif %}
+{% if entry.name %}
+{% set udata=get_data('user_'~func.rwurl(entry.name))|last.data|json_decode %}
+<div class="card"> <div class="card-content"> <span class="card-title grey-text text-darken-4" style="font-size:20px"><img src="https://images.weserv.nl/?url={% if entry.name=='anonymous' %}https://i.imgur.com/09PPRoG.jpg{% elseif get_data_count('user_'~func.rwurl(entry.name))!='0' %}{% if udata.avt=="default" %}https://api.adorable.io/avatars/25/{{udata.nick|slice(0,1)|trim}}.png{% else %}{{udata.avt}}{% endif %}{% else %}https://i.imgur.com/tBWLw5o.jpg{% endif %}&w=25&h=25&t=square&mask=circle" style="width:25px;margin: -5px 0 0!important; vertical-align: middle;pointer-events:none" /> {% if entry.name=='anonymous' %}Một bạn đã nói{% elseif get_data_count('user_'~func.rwurl(entry.name))!='0' %}{% if udata.hide=='1' %}{{udata.name}}{% else %}Một bạn đã nói{% endif %}{% else %}<b style="color:red">BOT</b>{% endif %}: </span> <p>{{func.bbcode(entry.comment)}}
+<div style='text-align: right;'><em><small>{{agos}}</small></em></div>
+</p> </div> </div>
+{% endif %} 
+{% endfor %}
+{{func.paging(url|join('/')~'?p=',p,page_max)}}
+{{block('end')}}

@@ -1,0 +1,133 @@
+{% block head %}
+{% import '_functions' as func %}
+{% from 'function.twig' import mi_add %}
+{% from 'func.twig' import get,mi_get,html_decode %}
+{% set run = get_data('bot')|last.data|json_decode %}
+{% set signin=func.signin() %}
+{% set url = get_uri_segments() %}
+{% set udata = get_data('user_'~signin)|last.data|json_decode %}
+{% set domain = current_url|split('/').2 %}
+{% set website = domain|split('.').0 %}
+<!DOCTYPE html> <html> <head> <meta http-equiv="Content-Type"  content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=yes"><meta http-equiv=”content-language” content=”vi” /><meta name="description" content="Bạn có tâm sự thầm kín? Bạn muốn giải tỏa áp lực trong lòng mình? Bạn muốn nói lên suy nghĩ của mình nhưng lại sợ miệng lưỡi thiên hạ? Hãy đến với {{website|capitalize}}, trang chia sẻ ẩn danh giúp bạn có thể giấu kín danh tính của mình, giờ đây bạn có thể nói ra quan điểm mà không sợ bị thiên hạ phán xét. Hãy trải nghiệm ngay hôm nay!"> <meta property="og:site_name"  content="Chuyện Trò Ẩn Danh"> <meta property="og:image"  content="https://i.imgur.com/QMKFXr6.jpg"> <meta name="theme-color" content="#424242"> <meta name="robots"  content="index,follow"> <meta name="googlebot"  content="index,follow"> <meta name="google" content="notranslate"> <meta name="format-detection" content="telephone=no"> <link rel="dns-prefetch" href="https://i.imgur.com"> <link rel="dns-prefetch"  href="https://cdnjs.cloudflare.com"> <link rel="dns-prefetch"  href="https://images.weserv.nl"> 
+<link href="https://fonts.googleapis.com/css?family=Monoton&display=swap"  rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"  rel="stylesheet">
+ <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> <link rel="shortcut icon" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/images/icon.png"  type="image/x-icon"> <link rel="icon" href="{{current_url|split('/').0~"//"~current_url|split('/').2}}/images/icon.png"  type="image/x-icon"> <title>{{title|default("Chuyện Trò Ẩn Danh - "~website|upper)}}</title> <style>
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed&display=swap');
+@media screen and (min-width:700px){div#left{float:left;width:30%}div#right{float:right;width:70%}span#none{display:none}div#f1{float:left;width:32%;margin-left:5px;margin-right:5px}div#f2{float:left;width:34%}div#f3{float:right;width:32%}div#cl1{float:left;width:40%}div#cl2{float:right;width:58%}.cl{margin-top: 4px; border: 1px solid #191c21}}@media screen and (max-width:699px){div.title{display:none}div#cl1{display:none}}
+body {
+   font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
+ * { word-wrap: break-word } video{text-align:center;margin:0 auto;display:block;width: 70%;height: auto;} .video-wrapper{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}.video-wrapper iframe{position:absolute;top:0;left:0;width:100%;height:100%} .lds-ellipsis{display:inline-block;position:relative;width:64px;height:64px}.lds-ellipsis div{position:absolute;top:27px;width:11px;height:11px;border-radius:50%;background:#fff;animation-timing-function:cubic-bezier(0,1,1,0)}.lds-ellipsis div:nth-child(1){left:6px;animation:lds-ellipsis1 .6s infinite}.lds-ellipsis div:nth-child(2){left:6px;animation:lds-ellipsis2 .6s infinite}.lds-ellipsis div:nth-child(3){left:26px;animation:lds-ellipsis2 .6s infinite}.lds-ellipsis div:nth-child(4){left:45px;animation:lds-ellipsis3 .6s infinite}@keyframes lds-ellipsis1{0%{transform:scale(0)}100%{transform:scale(1)}}@keyframes lds-ellipsis3{0%{transform:scale(1)}100%{transform:scale(0)}}@keyframes lds-ellipsis2{0%{transform:translate(0,0)}100%{transform:translate(19px,0)}}.title_1{background:url(https://i.imgur.com/8ylszRf.png);background:#191c21;border:0 solid #1c1f25;color:#FFF;margin-top:9px;padding:7px;border-radius:5px 5px 0 0;}.menu-top,.title{background:url(https://i.imgur.com/8ylszRf.png);background:#191c21;border:0 solid #1c1f25;color:#FFF;margin-top:9px;padding:7px;border-radius:5px 5px 0 0;}.title_o{background:#fff;border:0 solid #1c1f25;color:#282c31;margin-top:9px;padding:7px;border-radius:5px 5px 0 0;}span.title,span.title_o{margin-left:5px;margin-right:5px}.title_o_1{background:#fff;border:0 solid #1c1f25;color:#282c31;margin-top:9px;padding:7px;border-radius:5px 5px 0 0;}span.title_1,span.title_o_1{margin-left:5px;margin-right:5px}.list-login{background-color:#282c31;border:1px solid #191c21;border-top-width:0;padding:8px;border-left:0 solid #292e35;border-top:1px solid #393a40}.list:first-child {border-top: 1px solid #dee2e6}
+.list-item {padding: 5px 4px; border: 1px solid #dee2e6; border-top-width: 0; word-wrap: break-word}</style> <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.7.0/jquery.validate.min.js"></script></head> <body class="grey lighten-2" style="font-size:16px">
+<nav><div class="nav-wrapper grey darken-4" style="font-family: 'Monoton', cursive;"> <a href="/" class="brand-logo center">{{website|upper}}</a> </div> </nav>
+<div class="container">
+{% if signin %}
+<p class="sub" style="font-size:13px" align="right">Chào <b>{{udata.name}}</b>! Chế độ <a href="/status/hide_name">[ {% if udata.hide=='1' %}Công khai{% else %}Ẩn danh{% endif %} ]</a> <a href="/app/history">[ Lịch sử ]</a> <a href="/app/logout">[ Đăng xuất ]</a></p>
+{% else %}
+<p></p>
+{% endif %}
+{% endblock %}
+
+
+{% block end %}
+{% import '_functions' as func %}
+{% set signin=func.signin()|trim %}
+{% set url = get_uri_segments() %}
+{% if signin %}
+{{func.music()}}
+<script language="JavaScript" type="text/javascript">function tag(e,t){if(document.selection)document.form.msg.focus(),document.form.document.selection.createRange().text=e+document.form.document.selection.createRange().text+t;else if(null!=document.forms.form.elements.msg.selectionStart){var n=document.forms.form.elements.msg,o=n.value,s=n.selectionStart,l=n.selectionEnd-n.selectionStart;n.value=o.substr(0,s)+e+o.substr(s,l)+t+o.substr(s+l)}else document.form.msg.value+=e+t}function show_hide(e){obj=document.getElementById(e),"none"==obj.style.display?obj.style.display="block":obj.style.display="none"}</script>
+</div> <div class="fixed-action-btn"> <a class="btn-floating btn-large teal waves-effect waves-light"> <i class="large material-icons">dehaze</i> </a> <ul> <li><a class="btn-floating red" href="/tos.php#chat"><i class="material-icons">help</i></a></li> <li><a class="btn-floating green" href="/mp3"><i class="material-icons">headset</i></a></li> <li><a class="btn-floating blue" href="/smile"><i class="material-icons">emoji_emotions</i></a></li> <li><a class="btn-floating yellow darken-1" href="/"><i class="material-icons">home</i></a></li> </ul> </div> 
+{% endif %}
+<script> $(document).ready(function(){ $('.fixed-action-btn').floatingActionButton(); }); </script> <style> .screen-edge-right{z-index: 99999999; background: #a8a8a8; height: 100vh; width: 0px; box-shadow: 10px 0px 10px 12px #333; position: fixed; top: 0; right: 0;} .screen-edge-left{ z-index: 99999999; background: #a8a8a8; height: 100vh; width: 0px; box-shadow: 0px 0px 10px 3px #333; position: fixed; top: 0; left: 0;} </style> <div class="screen-edge-right"/> <div class="screen-edge-left"/> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css"> <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js' type='text/javascript'></script></body> </html>
+{% endblock %}
+
+
+{% block rules %}
+{% import '_functions' as func %}
+{% from 'function.twig' import mi_add %}
+{% from 'func.twig' import get,mi_get,html_decode %}
+{% set run = get_data('bot')|last.data|json_decode %}
+{% set signin=func.signin() %}
+{% set url = get_uri_segments() %}
+{% set udata = get_data('user_'~signin)|last.data|json_decode %}
+{% set domain = current_url|split('/').2 %}
+{% set website = domain|split('.').0 %}
+<div class="card"><div class="card-content"> <span align="center" class="card-title">Điều Khoản Và Điều Kiện</span> <br /> <div id="f1"><h5>1. Làm thế nào để được duyệt?</h5><br /> {{website|capitalize}} là trang Web để bạn nói lên những tâm tư thầm kín, những điều bạn muốn nói với ai đó nhưng không đủ can đảm, những điều bạn không muốn những người xung quanh mình biết,... một cách ẩn danh, tức mọi danh tính của bạn sẽ được ẩn đi. Không một ai biết bạn là ai, chỉ có bạn mới biết mình thực sự cần gì. Tất nhiên {{website|capitalize}} là một trang Web có nội dung nghiêm túc, vì vậy bạn cũng cần phải nghiêm túc khi tham gia. Dưới đây là một số tiêu chuẩn để câu chuyện của bạn sớm xuất hiện trên trang chủ:<br /> <br /> - Khi viết câu chuyện, hãy hạn chế tối đa việc viết tắt, sử dụng TeenCode, nói bậy để thể hiện cảm xúc (Như "buồn vl", "nản vđ", "muốn khóc vc", "dcm vui vl",...). Bạn hãy cố gắng viết một cách rõ ràng, có dấu, tất nhiên là đối với tiếng Việt. For other languages, please write in a way that people can understand what you say. Trong câu chuyện, bạn hãy lưu ý tới những tiểu tiết như viết Hoa đầu câu, chấm phẩy hợp lý, đúng nơi, đúng lúc.<br /> <br /> - Câu chuyện của bạn cũng như tất cả mọi người đều là những câu chuyện nghiêm túc, vì vậy xin đừng bỡn cợt câu chuyện của bất cứ ai mặc dù có thể bạn cho rằng nó rất bình thường, hoặc không đến nỗi phải <a href="{{current_url|split('/').0~"//"~current_url|split('/').2}}" target="_blank">tâm sự ẩn danh</a>, hay nó chỉ là câu chuyện của trẻ con...<br /> <br /> </div><div id="f2"><h5>2. Những quy định cần tuân thủ</h5><br /> {{website|capitalize}} là trang Web miễn phí, không giới hạn với bất cứ ai. Song nó vẫn phải có những quy định để đảm bảo trật tự cũng như sự nghiêm túc của nó. Dưới đây là một số quy định mà bạn cần tuân thủ để câu chuyện của mình không bị xóa:<br /> <br /> - Không được tuyên truyền chống phá nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam, không chia rẽ, phân biệt vùng miền, dân tộc. Không bàn luận về chính trị, những thứ liên quan đến tệ nạn xã hội, bạo lực, hành vi tiêu cực bị cộng đồng lên án.<br /> <br /> - Không được tuyên truyền văn hóa đồi trụy, khiêu dâm. Tuy nhiên có một số vẫn được cho phép.<br /> <br /> - Không công kích nhau bằng ngôn từ, dẫn đến những hành vi bạo lực.<br /> <br /> - Nếu có những vấn đề liên quan đến pháp luật, hãy mạnh dạn lên tiếng. Che dấu cho tội phạm cũng là đồng lõa.<br /> <br /> </div><div id="f3"><h5>3. Một số điều khoản về dữ liệu</h5><br /> Khi tham gia vào {{website|capitalize}}, bạn đã đồng ý về việc để {{website|capitalize}} sử dụng các dữ liệu liên quan đến Cookie để một số chức năng có thể hoạt động. {{website|capitalize}} cam kết không thu thập dữ liệu người dùng một cách trái phép trong bất cứ trường hợp nào.<br /></div> <div style="clear:both"></div>{% if signin %}</div></div><div class="card"><div class="card-content" id="chat"> <span align="center" class="card-title">Các Lệnh Chat Và BBCode</span><div id="left"><h5><span id="none">1. </span>Trò chơi</h5><br/><font color="green">Xem lời khuyên, đọc thư:</font><br/>- Lệnh: <b>letter</b><br/><font color="green">Xếp chữ:</font><br/>- Lệnh: <b>xc</b> hoặc <b>xep chu</b> hoặc <b>xếp chữ</b><br/><font color="green">Xem ảnh gái:</font><br/>- Lệnh: <b>girl</b> hoặc <b>ngắm</b><br/><font color="green">Xem bói:</font><br/>- Lệnh: <b>xem</b><br/></div><div id="right"><h5><span id="none">2. </span>BBcode</h5><br/><p>[url=liên kết]chỉ mục[/url]: dẫn chỉ mục từ liên kết khác</p><br/><p>[b]in đậm văn bản[/b]: <b>in đậm văn bản</b></p><br/><p>[i]in nghiêng văn bản[/i]: <i>in nghiêng văn bản</i></p><br/><p>[s]gạch ngang văn bản[/s]: <s>gạch ngang văn bản</s></p><br/><p>[u]gạch dưới văn bản[/u]: <u>gạch dưới văn bản</u></p><br/><p>[d]liên kết tải xuống[/d]: tải xuống</p><br/><p>[code]mã[/code]: hiển thị một đoạn mã vào khung</p><br/><p>[youtube]liên kết[/youtube]: chèn video từ youtube</p><br/><p>[img]liên kết hình ảnh[/img]: chèn ảnh từ liên kết khác</p><br/><p>[center]căn giữa[/center]: <center>căn giữa</center></p><br/><p>[left]căn lề trái[/left]: căn lề trái</p><br/><p>[red]chữ màu đỏ[/red]: <font color="red">chữ màu đỏ</font></p><br/><p>[blue]chữ màu xanh nước biển[/blue]: <font color="blue">chữ màu xanh nước biển</font></p><br/><p>[green]chữ màu xanh lá[/green]: <font color="green">chữ màu xanh lá</font></p></div><div style="clear:both"></div>{% endif %}</div> </div>
+{% endblock %}
+
+{% block toolbar %}
+{% import '_functions' as func %}
+{% set signin = func.signin()|trim %}
+{% set user = get_data('user_'~signin)[0].data|json_decode %}
+{% set total = user['smile']|trim|split('.')|length-1 %}
+<style>.redactor_box{border:1px solid #696969;border-bottom:none;position:relative;overflow:hidden}.redactor_toolbar{padding:0 0 0 2px;margin:0;border-bottom:1px solid #696969;position:relative;left:0;top:0;line-height:0;list-style:outside none none;overflow:hidden}.redactor_btn_group{padding:1px;margin:0;border:1px solid #000;border-radius:3px;overflow:hidden;box-shadow:1px 1px 1px rgba(255,255,255,0.5);outline:medium none;list-style:none outside none;margin:2px 2px 2px 2px;float:left}.redactor_toolbar li a{text-align:center;border:1px solid transparent;box-sizing:border-box;display:block;cursor:pointer;outline:medium none;width:24px;height:24px;float:left;outline:medium none}.redactor_toolbar li a:hover{background-color:#A5CAE4;border-color:#A5CAE4;border-radius:3px;outline:medium none}
+</style>
+
+<script language="JavaScript" type="text/javascript">function tag(e,t){if(document.selection)document.form.msg.focus(),document.form.document.selection.createRange().text=e+document.form.document.selection.createRange().text+t;else if(null!=document.forms.form.elements.msg.selectionStart){var n=document.forms.form.elements.msg,o=n.value,s=n.selectionStart,l=n.selectionEnd-n.selectionStart;n.value=o.substr(0,s)+e+o.substr(s,l)+t+o.substr(s+l)}else document.form.msg.value+=e+t}function show_hide(e){obj=document.getElementById(e),"none"==obj.style.display?obj.style.display="block":obj.style.display="none"}</script>
+            <ul class="redactor_toolbar">
+			<li class="redactor_btn_group">
+			<a href="javascript:tag('[b]', '[/b]')"><i class="fa fa-bold" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[i]', '[/i]')"><i class="fa fa-italic" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[u]', '[/u]')"><i class="fa fa-underline" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[s]', '[/s]')"><i class="fa fa-strikethrough" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+            <a href="javascript:tag('[center]', '[/center]')"><i class="fa fa-align-center" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[right]', '[/right]')"><i class="fa fa-align-right" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[code]', '[/code]')"><i class="fa fa-code" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[url=]', '[/url]')"><i class="fa fa-link" aria-hidden="true"></i></a>
+            <a href="javascript:tag('[d]', '[/d]')"><i class="fa fa-download" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+	    <a href="javascript:tag('[img]', '[/img]', '')"><i class="fa fa-picture-o" aria-hidden="true"></i></a>
+			<a href="javascript:show_hide('upload')"><i class="fa fa-cloud-upload" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[mp3]', '[/mp3]', '')"><i class="fa fa-music" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[video]', '[/video]', '')"><i class="fa fa-play-circle" aria-hidden="true"></i></a>
+			</li>
+			<li class="redactor_btn_group">
+	    <a href="javascript:tag('[scloud]', '[/scloud]', '')"><i class="fa fa-soundcloud" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[youtube]', '[/youtube]', '')"><i class="fa fa-youtube-play" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[gdrive]', '[/gdrive]', '')"><i class="fa fa-google" aria-hidden="true"></i></a>
+	    <a href="javascript:tag('[gist]', '[/gist]', '')"><i class="fa fa-git-square" aria-hidden="true"></i></a>
+			</li>
+            </ul>
+<div id="upload" style="display:none;"><iframe style="border: 0px none;" src="/imgur"  width="100%" height="auto"><p>Trình duyệt của bạn không hỗ trợ iframe.</p></iframe></div>
+{% endblock %}
+
+{% block list_status %}
+{% set data= func.get(db)|trim|split('@')|reverse %}
+{% set total=data|length-1 %} 
+ {% set page_max=total//page %}
+{% if total//page != total/page %}
+{% set page_max=total//page+1 %}
+{% endif %}
+{% set p=get_get('p')|default(1) %} 
+{% if p matches '/[a-zA-z]|%/' or p<1 %}
+{% set p=1 %}
+{% endif %}
+{% if p>page_max %}
+{% set p=page_max %}
+{% endif %}
+{% set st=p*page-page %}
+{% if total=='0' %}
+<div class="card"><div class="card-content">Dòng thời gian trống !</div></div>
+{% else %}
+{% for i in data|slice(0,total)|slice(st,page) %}
+{% set entry = get_data('status_'~i|trim)|last.data|json_decode %}
+{% set jun = ("now"|date("U"))-time %}
+{% if jun > 1 %}
+{% set agos = entry.time|date('H:i:s -
+ d/m/y',"Asia/Ho_Chi_Minh") %}
+{% else %}
+{% set agos = 'vừa xong' %}
+{% endif %}
+{% if entry.name %}
+{% set udata=get_data('user_'~func.rwurl(entry.name))|last.data|json_decode %}
+<div class="card"> <div class="card-content"> {% if url[0]!='app' %}<span class="card-title grey-text text-darken-4" style="font-size:20px"><img src="https://images.weserv.nl/?url={% if entry.name=='anonymous' %}https://i.imgur.com/09PPRoG.jpg{% elseif get_data_count('user_'~func.rwurl(entry.name))!='0' %}{% if udata.avt=="default" %}https://api.adorable.io/avatars/25/{{udata.nick|slice(0,1)|trim}}.png{% else %}{{udata.avt}}{% endif %}{% else %}https://i.imgur.com/tBWLw5o.jpg{% endif %}&w=25&h=25&t=square&mask=circle" style="width:25px;margin: -5px 0 0!important; vertical-align: middle;pointer-events:none" /> {% if entry.name=='anonymous' %}Một bạn đã nói{% elseif get_data_count('user_'~func.rwurl(entry.name))!='0' %}{% if udata.hide=='1' %}{{udata.name}}{% else %}Một bạn đã nói{% endif %}{% else %}<b style="color:red">BOT</b>{% endif %}: </span> {% endif %}<p>{{func.bbcode(entry.comment)}}
+<div style='text-align: right;'><em><small>{{agos}}</small></em></div>
+</p> </div> </div>
+{% endif %} 
+{% endfor %}
+{% endif %}
+{% if hide_page=='1' %}{{func.paging(url|join('/')~'?p',p,page_max)}}{% endif %}
+{% endblock %}

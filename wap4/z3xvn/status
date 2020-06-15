@@ -1,0 +1,52 @@
+{% use '_blocks' %}
+{% import '_functions' as func %}
+{% from 'function.twig' import mi_add %}
+{% from 'func.twig' import get,mi_get,html_decode %}
+{% set domain = current_url|split('/').2 %}
+{% set website = domain|split('.').0 %}
+{% set run = get_data('bot')|last.data|json_decode %}
+{% set signin=func.signin()|trim %}
+{% set url = get_uri_segments() %}
+{% set udata = get_data('user_'~signin)|last.data|json_decode %}
+{% set title %}{% if url[1]=='write' and signin %}Tâm trạng hôm nay của bạn như thế nào?{% else %}Dòng thời gian{% endif %}{% endset %}
+{% set title = title|trim~' - '~website|upper %}
+{{block('head')}}
+{% if url[1]=='hide_name' and signin %}
+{% if udata['hide']=='1' %}{{func.add('user_'~signin,'hide',0)}}{% else %}{{func.add('user_'~signin,'hide',1)}}{% endif %}Chuyển đổi thành công!<script language="javascript" type="text/javascript"> 
+window.location.href="/home"; 
+</script> <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/home">
+{% elseif url[1]=='write' and signin %}
+<a href="/status"><span class="title_o_1">Tâm trạng hôm nay</span></a> <span class="title_1">Viết mới</span>
+<div class="card">{{block('toolbar')}}<div class="card-content"><form method="post" action="" name="form"> <div class="input-field col s12"> <textarea id="comment" class="materialize-textarea"  name="msg" placeholder="Viết tâm trạng..."></textarea> <p>{{captcha()|raw}}</p></div> 
+<div align="right"><button type="submit" class="btn waves-effect waves-light"><i class="fal fa-pen-square"></i> Gửi</button><input type="hidden" name="token" value="{{random(100000)}}"/> </div></form></div></div>
+{% if request_method()|lower == "post" %}
+<p align="center">
+{% set id = run['status']|trim+1 %}
+{% if get_post('msg')|length >= '5' %}
+{% set data = {"name" :signin,"time":"now"|date("U"),"comment":get_post("msg"),"like":0} %}
+{% set status = save_data_captcha("status_"~id,data|json_encode) %}
+{% if status == 'CAPTCHA_ERR' %}
+<font color="red">Vui lòng xác nhận <b>Tôi không phải là người máy</b> !</font>
+{% else %}
+{{func.add('bot','status',id)}}
+{{func.trom_up('status',id,'up')}}
+{{func.trom_up('status_'~signin,id,'up')}}
+<font color="green">Tâm trạng của bạn đã được chia sẻ và được lưu trong lịch sử đăng bài của bạn !</font>
+<script language="javascript" type="text/javascript"> 
+window.location.href="/status"; 
+</script> 
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/status">
+{% endif %}
+{% else %}
+<font color="red">Nội dung phải đạt ít nhất 5 ký tự !</font>
+{% endif %}
+</p>
+{% endif %}
+{% else %}
+<span class="title_1">{% if signin %}Tâm trạng hôm nay{% else %}Dòng thời gian{% endif %}</span> {% if signin %}<a href="/status/write"><span class="title_o_1">Viết mới</span></a>{% endif %}
+{% set db = 'status' %}
+{% set page = '15' %}
+{% set hide_page = '1' %}
+{{block('list_status')}}
+{% endif %}
+{{block('end')}}
